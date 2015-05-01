@@ -21,6 +21,7 @@
 \usepackage{ulem} % para subrayados especiales
 \usepackage{color}
 \usepackage{framed}
+\usepackage{ifthen}
 
 \definecolor{shadecolor}{rgb}{0.95,0.95,0.95}
 
@@ -109,13 +110,14 @@
 \newenvironment{restriccionesMR}{\begin{itemize}}{\end{itemize}}
 %Clase1 Clase2 Atributo Ida Vuelta
 \newcommand{\restriccion}[5]{
-   \item{ \ifthenelse{\equal{#4}{d}}{ $#1.#3$ debe estar en $#2.#3$}{$#1.#3$ puede no estar en $#2.#3$}}\item{ \ifthenelse{\equal{#5}{d}}{$#2.#3$ debe estar en $#1.#3$}{$#2.#3$ puede no estar en $#1.#3$}}
+ \item{ \ifthenelse{\equal{#4}{d}}{ \emph{#1.#3} debe estar en \emph{#2.#3}}{\emph{#1.#3} puede no estar en \emph{#2.#3}}}\item{ \ifthenelse{\equal{#5}{d}}{\emph{#2.#3} debe estar en \emph{#1.#3}}{\emph{#2.#3} puede no estar en \emph{#1.#3}}} 
     }
 %%%%%%%%%% Comandos para Modelo Relacional - Fin %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \begin{document}
 \pagenumbering{gobble} 
+ \normalem
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -214,7 +216,7 @@ Vita, Sebastián  & 149/11 & {\tt sebastian\_vita@yahoo.com.ar}\\
 \newpage
 
 \subsection{Restricciones}
-\input{restriccionesDER.tex}
+%\input{restriccionesDER.tex}
 
 \newpage
 
