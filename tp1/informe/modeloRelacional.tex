@@ -1,26 +1,177 @@
 %% Nombre PK CK FK PKCK PKCKFK otrasClaves
-\relacion{Ciudadano}{}{}{NúmeroMesa}{DNI}{}{\PKCK{DNI}, Nombre, Apellido, FechaNacimiento, FechaIngresoPadron, FechaDefunción, \FK{NúmeroMesa}}
-\relacion{CandidatoElectoral}{}{}{idPartido}{(Número, idVotación)}{}{\PKCK{Número, idVotación}, \FK{idPartido}, CantVotos}
-\relacion{EsCandidato}{}{}{DNI, Número}{(DNI, Número)}{}{\PKCKFK{DNI}, \PKCKFK{Número}}
-\relacion{MesaElectoral}{}{}{DNI, idCentro}{NúmeroMesa}{}{\PKCK{NúmeroMesa}, \FK{DNI, idCentro}}
-\relacion{Votación}{}{}{idTipoVotación}{idVotación}{}{\PKCK{idVotación}, \FK{idTipoVotación}, Fechainicio, FechaFin}
-\relacion{VotoEn}{}{}{DNI, idVotación, NúmeroMesa}{(DNI, idVotación)}{}{\PKCKFK{DNI}, \PKCKFK{idVotación}, \FK{NúmeroMesa}, fecha}
-\relacion{AutoridadDeMesa}{}{}{DNI}{idAutoridad}{}{\PKCK{idAutoridad}, \FK{DNI}}
-\relacion{Camioneta}{idCamioneta}{idCamioneta, Patente}{DNI}{}{}{\PK{idCamioneta}, \FK{DNI}, Patente}
-\relacion{EsVotado}{}{}{NúmeroMesa, Número}{(NúmeroMesa, Número)}{}{\PKCKFK{NúmeroMesa, Número}, CantVotos}
-\relacion{CentroDeVotación}{}{}{idMunicipio}{idCentro}{}{\PKCK{idCentro}, Dirección, Nombre, \FK{idMunicipio}}
-\relacion{OpciónElectoral}{}{}{}{(Número, idVotación)}{}{\PKCK{Número, idVotación}, Descripción, CantVotos}
-\relacion{EsVotada}{}{}{NúmeroMesa, Número}{(NúmeroMesa, Número)}{}{\PKCKFK{NúmeroMesa, Número}, CantVotos}
-\relacion{AutoridadDeMesa}{}{}{NúmeroMesa, idVotación}{idAutoridad}{}{\PKCK{idAutoridad}, \FK{NúmeroMesa, idVotación}}
+
+\relacion{Votación}{}{}{idTipoVotación}{idVotación}{}{\PKCK{idVotación}, fechaInicio, fechaFin, tipo, \FK{idTipoVotación}}
+\begin{restriccionesMR}
+ \restriccion{Votación}{TipoVotación}{idTipoVotación}{d}
+ \restriccion{Votación}{AutoridadDeMesa}{idVotación}{d}
+ \restriccion{Votación}{ProvinciasQueAbarcaVotación}{idVotación}{p}
+ \restriccion{Votación}{VotoEn}{idVotación}{p}
+ \restriccion{Votación}{MunicipiosQueAbarcaVotación}{idVotación}{p}
+ \restriccionCustom{Votación.tipo}{debe ser ``ELECCIÓN CARGO PÚBLICO'' ó ``CONSULTA POPULAR''}{}
+ \item{Votación.idVotación puede estar en ElecciónCargoPúblico.idVotación o (exclusivo) ConsultaPopular.idVotación o (exclusivo) no estar en ninguno de los dos anteriores}
+\end{restriccionesMR}
+
+
 \relacion{TipoVotación}{}{}{}{idTipoVotación}{}{\PKCK{idTipoVotación}, Nombre}
-\relacion{EleciónCargoPolítico}{}{}{}{}{idVotación}{\PKCKFK{idVotación}}
+\begin{restriccionesMR}
+ \restriccion{TipoVotación}{Votación}{idTipoVotación}{d}
+\end{restriccionesMR}
+
+
+\relacion{ElecciónCargoPúblico}{}{}{}{}{idVotación}{\PKCKFK{idVotación}}
+\begin{restriccionesMR}
+ \restriccion{ElecciónCargoPúblico}{CandidatoElectoral}{idVotación}{d}
+ \restriccion{ElecciónCargoPúblico}{Votación}{idVotación}{d}
+\end{restriccionesMR}
+
+
 \relacion{ConsultaPopular}{}{}{}{}{idVotación}{\PKCKFK{idVotación}}
-\relacion{Provincia}{}{}{}{idProvincia}{}{\PKCK{idProvincia}, Nombre}
-\relacion{ProvinciaQueAbarca}{}{}{(idVotación, idProvincia)}{(idVotación, idProvincia)}{}{\PKCKFK{idVotación, idProvincia}}
-\relacion{Municipio}{}{}{idProvincia}{idMunicipio}{}{\PKCK{idMunicipio}, Nombre, \FK{idProvincia}}
-\relacion{MunicipioQueAbarca}{}{}{(idVotación, idMunicipio)}{(idVotación, idMunicipio)}{}{\PKCKFK{idVotación, idMunicipio}}
+\begin{restriccionesMR}
+ \item{ConsultaPopular.idVotación debe estar en Votación.idVotación}
+ \restriccion{ConsultaPopular}{OpciónElectoral}{idVotación}{d}
+\end{restriccionesMR}
+
+
+\relacion{Ciudadano}{}{}{NúmeroMesaPadrón}{DNI}{}{\PKCK{DNI}, Nombre, Apellido, FechaNacimiento, FechaIngresoPadron,\\
+                                                  \hspace*{2cm} FechaDefunción, \FK{NúmeroMesaPadrón}}
+\begin{restriccionesMR}
+ \restriccion{Ciudadano}{CandidatoElectoral}{DNI}{p}
+ \restriccion{Ciudadano}{VotoEn}{DNI}{p}
+ \restriccionDos{Ciudadano}{MesaElectoral}{DNI}{DNITécnico}{p}
+ \restriccionDos{Ciudadano}{MesaElectoral}{NúmeroMesaPadrón}{NúmeroMesa}{d}
+ \restriccion{Ciudadano}{AutoridadDeMesa}{DNI}{p}
+ \restriccionDos{Ciudadano}{Camioneta}{DNI}{DNIResponsable}{p}
+\end{restriccionesMR}
+
+
+\relacion{MesaElectoral}{}{}{DNITécnico, idCentro}{NúmeroMesa}{}{\PKCK{NúmeroMesa}, \FK{DNITécnico}, \FK{idCentro}}
+\begin{restriccionesMR}
+ \restriccionDos{MesaElectoral}{Ciudadano}{DNITécnico}{DNI}{d}
+ \restriccionDos{MesaElectoral}{Ciudadano}{NúmeroMesa}{NúmeroMesaPadrón}{d}
+ \restriccion{MesaElectoral}{VotoEn}{NúmeroMesa}{p}
+ \restriccion{MesaElectoral}{EsVotado}{NúmeroMesa}{p}
+ \restriccion{MesaElectoral}{CentroDeVotación}{idCentro}{d}
+ \restriccion{MesaElectoral}{EsVotada}{NúmeroMesa}{p}
+ \restriccion{MesaElectoral}{AutoridadDeMesa}{NúmeroMesa}{d}
+\end{restriccionesMR}
+
+
+\relacion{VotóEn}{}{}{DNI, idVotación, NúmeroMesa}{(DNI, idVotación)}{}{\PK{\FK{DNI}, \FK{idVotación}}, \FK{NúmeroMesa}, fecha}
+\begin{restriccionesMR}
+ \restriccion{VotoEn}{Ciudadano}{DNI}{d}
+ \restriccion{VotoEn}{MesaElectoral}{NúmeroMesa}{d}
+ \restriccion{VotoEn}{Votación}{idVotación}{d}
+\end{restriccionesMR}
+
+
+\relacion{CandidatoElectoral}{}{}{idVotación, DNI, idPartido}{(idVotación, Número)}{}{\PKCK{\FK{idVotación}, Número}, CantVotos, \FK{DNI}, \FK{idPartido}}
+\begin{restriccionesMR}
+ \restriccion{CandidatoElectoral}{EsVotado}{Número}{p}
+ \restriccion{CandidatoElectoral}{ElecciónCargoPúblico}{idVotación}{d}
+ \restriccion{CandidatoElectoral}{PartidoPolítico}{idPartido}{d}
+ \restriccion{CandidatoElectoral}{Ciudadano}{DNI}{d}
+\end{restriccionesMR}
+
+
+\relacion{CandidatoEsVotado}{}{}{(idVotación, NúmeroCandidato), NúmeroMesa}
+                                {(idVotación, NúmeroCandidato, NúmeroMesa)}{}
+                                {\PK{\FK{idVotación, NúmeroCandidato}, \FK{NúmeroMesa}}, cantVotos}
+\begin{restriccionesMR}
+ \restriccionCustom{(CandidatoEsVotado.idVotación, CandidatoEsVotado.NúmeroCandidato)}
+	           {debe estar en\\ }
+	           {(CandidatoElectoral.idVotación, CandidatoElectoral.Número)}
+ \restriccion{CandidatoEsVotado}{MesaElectoral}{NúmeroMesa}{d}
+\end{restriccionesMR}
+
+
+\relacion{OpciónElectoral}{}{}{idVotación}{(idVotación, Número)}{}{\PK{\FK{idVotación}, Número}, descripción, cantVotos}
+\begin{restriccionesMR}
+ \restriccion{OpciónElectoral}{EsVotada}{Número}{p}
+ \restriccion{OpciónElectoral}{ConsultaPopular}{idVotación}{d}
+\end{restriccionesMR}
+
+
+\relacion{OpciónElectoralEsVotada}{}{}{(idVotación, NúmeroOpción), NúmeroMesa}
+                                      {(idVotación, NúmeroOpción, NúmeroMesa)}{}
+                                      {\PK{\FK{idVotación, NúmeroOpción}, \FK{NúmeroMesa}}, cantVotos}
+\begin{restriccionesMR}
+ \restriccionCustom{(OpciónElectoralEsVotada.idVotación, OpciónElectoralEsVotada.NúmeroOpción)\\ }
+	           {debe estar en\\ }
+	           {(OpciónElectoral.idVotación, OpciónElectoral.Número)}
+ \restriccion{OpciónElectoralEsVotada}{MesaElectoral}{NúmeroMesa}{d}
+\end{restriccionesMR}
+
+
+\relacion{AutoridadDeMesa}{}{}{DNI, NúmeroMesa, idVotación}{idAutoridad}{}{\PKCK{idAutoridad}, tipo, \FK{DNI}, \FK{NúmeroMesa}, \FK{idVotación}}
+\begin{restriccionesMR}
+ \restriccion{AutoridadDeMesa}{Ciudadano}{DNI}{d}
+ \restriccion{AutoridadDeMesa}{MesaElectoral}{NúmeroMesa}{d}
+ \restriccion{AutoridadDeMesa}{Votación}{idVotación}{d}
+ \restriccionCustom{AutoridadDeMesa.tipo}{debe ser ``FISCAL DE MESA'' ó ``PRESIDENTE DE MESA'' ó\\ ``VICEPRESIDENTE DE MESA''}{}
+ \restriccion{AutoridadDeMesa}{FiscalDeMesa}{idAutoridad}{p}
+\end{restriccionesMR}
+
+
+\relacion{FiscalDeMesa}{}{}{}{idAutoridad, idPartido}{idAutoridad}{\PKCKFK{idAutoridad}, \FK{idPartido}}
+\begin{restriccionesMR}
+ \restriccion{FiscalDeMesa}{AutoridadDeMesa}{idAutoridad}{d}
+ \restriccion{FiscalDeMesa}{PartidoPolítico}{idPartido}{d}
+\end{restriccionesMR}
+
+
 \relacion{PartidoPolítico}{}{}{}{idPartido}{}{\PKCK{idPartido}, Nombre}
-\relacion{FiscalDeMesa}{}{}{}{}{idAutoridad, idPartido}{\PKCKFK{idAutoridad, idPartido}}
-\relacion{PresidenteDeMesa}{}{}{}{}{idAutoridad}{\PKCKFK{idAutoridad}}
-\relacion{VicePresidenteDeMesa}{}{}{}{}{idAutoridad}{\PKCKFK{idAutoridad}}
-\relacion{TieneAsignada}{}{}{idCentro, idCamioneta}{(idCentro, idCamioneta)}{}{\PKCKFK{idCentro, idCamioneta}}
+\begin{restriccionesMR}
+ \restriccion{PartidoPolítico}{CandidatoElectoral}{idPartido}{p}
+ \restriccion{PartidoPolítico}{FiscalDeMesa}{idPartido}{p}
+\end{restriccionesMR}
+
+
+\relacion{CentroDeVotación}{}{}{idMunicipio}{idCentro}{}{\PKCK{idCentro}, nombre, dirección, \FK{idMunicipio}}
+\begin{restriccionesMR}
+ \restriccion{CentroDeVotación}{MesaElectoral}{idCentro}{d}
+ \restriccion{CentroDeVotación}{Municipio}{idMunicipio}{d}
+ \restriccion{CentroDeVotación}{Camioneta\_X\_CentroDeVotación}{idCentro}{d}
+\end{restriccionesMR}
+
+
+\relacion{Camioneta}{idCamioneta}{idCamioneta, patente}{DNIResponsable}{}{}{\PK{idCamioneta}, patente, \FK{DNIResponsable}}
+\begin{restriccionesMR}
+ \restriccionDos{Camioneta}{Ciudadano}{DNIResponsable}{DNI}{d}
+ \restriccion{Camioneta}{Camioneta\_X\_CentroDeVotación}{idCamioneta}{d}
+\end{restriccionesMR}
+
+
+\relacion{Camioneta\_X\_CentroDeVotación}{}{}{idCentro, idCamioneta}{(idCentro, idCamioneta)}{}{\PK{\FK{idCentro}, \FK{idCamioneta}}}
+\begin{restriccionesMR}
+ \restriccion{Camioneta\_X\_CentroDeVotación}{Camioneta}{idCamioneta}{d}
+ \restriccion{Camioneta\_X\_CentroDeVotación}{CentroDeVotación}{idCentro}{d}
+\end{restriccionesMR}
+
+
+\relacion{Provincia}{}{}{}{idProvincia}{}{\PKCK{idProvincia}, nombre}
+\begin{restriccionesMR}
+ \restriccion{Provincia}{ProvinciasQueAbarcaVotación}{idProvincia}{p}
+ \restriccion{Provincia}{Municipio}{idProvincia}{d}
+\end{restriccionesMR}
+
+
+\relacion{Municipio}{}{}{idProvincia}{idMunicipio}{}{\PKCK{idMunicipio}, nombre, \FK{idProvincia}}
+\begin{restriccionesMR}
+  \restriccion{Municipio}{CentroDeVotación}{idMunicipio}{d}
+  \restriccion{Municipio}{MunicipiosQueAbarcaVotación}{idProvincia}{p}
+  \restriccion{Municipio}{Provincia}{idProvincia}{d}
+\end{restriccionesMR}
+
+
+\relacion{ProvinciasQueAbarcaVotación}{}{}{idVotación, idProvincia}{(idVotación, idProvincia)}{}{\PK{\FK{idVotación}, \FK{idProvincia}}}
+\begin{restriccionesMR}
+ \restriccion{ProvinciasQueAbarcaVotación}{Votación}{idVotación}{d}
+ \restriccion{ProvinciasQueAbarcaVotación}{Provincia}{idProvincia}{d}
+\end{restriccionesMR}
+
+
+\relacion{MunicipiosQueAbarcaVotación}{}{}{idVotación, idMunicipio}{(idVotación, idMunicipio)}{}{\PK{\FK{idVotación}, \FK{idMunicipio}}}
+\begin{restriccionesMR}
+ \restriccion{MunicipiosQueAbarcaVotación}{Votación}{idVotación}{d}
+ \restriccion{MunicipiosQueAbarcaVotación}{Municipio}{idProvincia}{d}
+\end{restriccionesMR}
