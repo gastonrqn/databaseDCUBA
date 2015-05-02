@@ -5,10 +5,10 @@
  \restriccion{Votación}{TipoVotación}{idTipoVotación}{d}
  \restriccion{Votación}{AutoridadDeMesa}{idVotación}{d}
  \restriccion{Votación}{ProvinciasQueAbarcaVotación}{idVotación}{p}
- \restriccion{Votación}{VotoEn}{idVotación}{p}
  \restriccion{Votación}{MunicipiosQueAbarcaVotación}{idVotación}{p}
+ \restriccion{Votación}{VotoEn}{idVotación}{p}
  \restriccionCustom{Votación.tipo}{debe ser ``ELECCIÓN CARGO PÚBLICO'' ó ``CONSULTA POPULAR''}{}
- \item{Votación.idVotación puede estar en ElecciónCargoPúblico.idVotación o (exclusivo) ConsultaPopular.idVotación o (exclusivo) no estar en ninguno de los dos anteriores}
+ \restriccionCustom{Votacion.idVotación}{debe estar en \emph{ElecciónCargoPúblico.idVotación}\\ ó (exclusivo) en \emph{ConsultaPopular.idVotación}}{}
 \end{restriccionesMR}
 
 
@@ -20,14 +20,14 @@
 
 \relacion{ElecciónCargoPúblico}{}{}{}{}{idVotación}{\PKCKFK{idVotación}}
 \begin{restriccionesMR}
- \restriccion{ElecciónCargoPúblico}{CandidatoElectoral}{idVotación}{d}
  \restriccion{ElecciónCargoPúblico}{Votación}{idVotación}{d}
+ \restriccion{ElecciónCargoPúblico}{CandidatoElectoral}{idVotación}{d}
 \end{restriccionesMR}
 
 
 \relacion{ConsultaPopular}{}{}{}{}{idVotación}{\PKCKFK{idVotación}}
 \begin{restriccionesMR}
- \item{ConsultaPopular.idVotación debe estar en Votación.idVotación}
+ \restriccion{ConsultaPopular}{Votación}{idVotación}{d}
  \restriccion{ConsultaPopular}{OpciónElectoral}{idVotación}{d}
 \end{restriccionesMR}
 
@@ -49,9 +49,9 @@
  \restriccionDos{MesaElectoral}{Ciudadano}{DNITécnico}{DNI}{d}
  \restriccionDos{MesaElectoral}{Ciudadano}{NúmeroMesa}{NúmeroMesaPadrón}{d}
  \restriccion{MesaElectoral}{VotoEn}{NúmeroMesa}{p}
- \restriccion{MesaElectoral}{EsVotado}{NúmeroMesa}{p}
+ \restriccion{MesaElectoral}{CandidatoEsVotado}{NúmeroMesa}{p}
  \restriccion{MesaElectoral}{CentroDeVotación}{idCentro}{d}
- \restriccion{MesaElectoral}{EsVotada}{NúmeroMesa}{p}
+ \restriccion{MesaElectoral}{OpciónElectoralEsVotada}{NúmeroMesa}{p}
  \restriccion{MesaElectoral}{AutoridadDeMesa}{NúmeroMesa}{d}
 \end{restriccionesMR}
 
@@ -66,7 +66,9 @@
 
 \relacion{CandidatoElectoral}{}{}{idVotación, DNI, idPartido}{(idVotación, Número)}{}{\PKCK{\FK{idVotación}, Número}, CantVotos, \FK{DNI}, \FK{idPartido}}
 \begin{restriccionesMR}
- \restriccion{CandidatoElectoral}{EsVotado}{Número}{p}
+ \restriccionCustom{(CandidatoElectoral.idVotación, CandidatoElectoral.Número)}
+		   {puede no estar en\\ }
+		   {(CandidatoEsVotado.idVotación, CandidatoEsVotado.NúmeroCandidato)}
  \restriccion{CandidatoElectoral}{ElecciónCargoPúblico}{idVotación}{d}
  \restriccion{CandidatoElectoral}{PartidoPolítico}{idPartido}{d}
  \restriccion{CandidatoElectoral}{Ciudadano}{DNI}{d}
@@ -86,7 +88,9 @@
 
 \relacion{OpciónElectoral}{}{}{idVotación}{(idVotación, Número)}{}{\PK{\FK{idVotación}, Número}, descripción, cantVotos}
 \begin{restriccionesMR}
- \restriccion{OpciónElectoral}{EsVotada}{Número}{p}
+ \restriccionCustom{(OpciónElectoral.idVotación, OpciónElectoral.Número)}
+	           {puede no estar en\\ }
+	           {(OpciónElectoralEsVotada.idVotación, OpciónElectoralEsVotada.NúmeroOpción)}
  \restriccion{OpciónElectoral}{ConsultaPopular}{idVotación}{d}
 \end{restriccionesMR}
 
@@ -173,5 +177,5 @@
 \relacion{MunicipiosQueAbarcaVotación}{}{}{idVotación, idMunicipio}{(idVotación, idMunicipio)}{}{\PK{\FK{idVotación}, \FK{idMunicipio}}}
 \begin{restriccionesMR}
  \restriccion{MunicipiosQueAbarcaVotación}{Votación}{idVotación}{d}
- \restriccion{MunicipiosQueAbarcaVotación}{Municipio}{idProvincia}{d}
+ \restriccion{MunicipiosQueAbarcaVotación}{Municipio}{idMunicipio}{d}
 \end{restriccionesMR}
