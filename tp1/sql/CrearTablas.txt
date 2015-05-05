@@ -1,0 +1,181 @@
+CREATE TABLE Provincia (
+idProvincia bigint NOT NULL AUTO_INCREMENT,
+nombre char(20),
+CONSTRAINT PK_Provincia PRIMARY KEY(idProvincia)
+);
+
+CREATE TABLE Municipio (
+idMunicipio bigint NOT NULL AUTO_INCREMENT,
+nombre char(20),
+idProvincia bigint,
+CONSTRAINT PK_Municipio PRIMARY KEY(idMunicipio),
+CONSTRAINT FK_ProvinciaXMunicipio FOREIGN KEY (idProvincia) REFERENCES Provincia (idProvincia)
+);
+
+CREATE TABLE CentroDeVotacion (
+idCentro bigint NOT NULL AUTO_INCREMENT,
+direccion char(20),
+nombre char(20),
+idMunicipio bigint,
+CONSTRAINT PK_CentroDeVotacion PRIMARY KEY(idCentro),
+CONSTRAINT FK_MunicipioXCentroDeVotacion FOREIGN KEY (idMunicipio) REFERENCES Municipio (idMunicipio)
+);
+
+CREATE TABLE Ciudadano (
+DNI bigint NOT NULL,
+Nombre char(20),
+Apellido char(20),
+FechaNacimiento datetime,
+FechaIngresoPadro datetime,
+FechaDefuncion datetime,
+NumeroMesaPadron int,
+CONSTRAINT PK_Ciudadano PRIMARY KEY(DNI)
+);
+
+CREATE TABLE MesaElectoral (
+NumeroMesa int NOT NULL AUTO_INCREMENT,
+DNITecnico bigint,
+idCentro bigint,
+CONSTRAINT PK_MesaElectoral PRIMARY KEY(NumeroMesa),
+CONSTRAINT FK_CiudadanoXMesaElectoral FOREIGN KEY (DNITecnico) REFERENCES Ciudadano (DNI),
+CONSTRAINT FK_CentroDeVotacionXMesaElectoral FOREIGN KEY (idCentro) REFERENCES CentroDeVotacion (idCentro)
+);
+
+ALTER TABLE Ciudadano ADD FOREIGN KEY (NumeroMesaPadron) REFERENCES MesaElectoral (NumeroMesa);
+
+CREATE TABLE TipoVotacion (
+idTipoVotacion bigint NOT NULL AUTO_INCREMENT,
+Nombre char(20),
+CONSTRAINT PK_TipoVotacion PRIMARY KEY(idTipoVotacion)
+);
+
+CREATE TABLE Votacion (
+idVotacion bigint NOT NULL AUTO_INCREMENT,
+fechaInicio datetime,
+fechaFin datetime,
+tipo char(20),
+idTipoVotacion bigint,
+CONSTRAINT PK_Votacion PRIMARY KEY(idVotacion),
+CONSTRAINT FK_TipoVotacionXVotacion FOREIGN KEY (idTipoVotacion) REFERENCES TipoVotacion (idTipoVotacion)
+);
+
+CREATE TABLE ProvinciaQueAbarcaVotacion (
+idProvincia bigint NOT NULL,
+idVotacion bigint NOT NULL,
+CONSTRAINT PK_ProvinciaQueAbarcaVotacion PRIMARY KEY(idProvincia, idVotacion),
+CONSTRAINT FK_ProvinciaXProvinciaQueAbarcaVotacion FOREIGN KEY (idProvincia) REFERENCES Provincia (idProvincia),
+CONSTRAINT FK_VotacionXProvinciaQueAbarcaVotacion FOREIGN KEY (idVotacion) REFERENCES Votacion (idVotacion)
+);
+
+CREATE TABLE MunicipioQueAbarcaVotacion (
+idMunicipio bigint NOT NULL,
+idVotacion bigint NOT NULL,
+CONSTRAINT PK_MunicipioQueAbarcaVotacion PRIMARY KEY(idMunicipio, idVotacion),
+CONSTRAINT FK_MunicipioXMunicipioQueAbarcaVotacion FOREIGN KEY (idMunicipio) REFERENCES Municipio (idMunicipio),
+CONSTRAINT FK_VotacionXMunicipioQueAbarcaVotacion FOREIGN KEY (idVotacion) REFERENCES Votacion (idVotacion)
+);
+
+CREATE TABLE PartidoPolitico (
+idPartido bigint NOT NULL AUTO_INCREMENT,
+Nombre char(20),
+CONSTRAINT PK_PartidoPolitico PRIMARY KEY(idPartido)
+);
+
+CREATE TABLE EleccionCargoPublico (
+idVotacion bigint NOT NULL,
+CONSTRAINT PK_EleccionCargoPolitico PRIMARY KEY(idVotacion),
+CONSTRAINT FK_VotacionXEleccionCargoPolitico FOREIGN KEY (idVotacion) REFERENCES Votacion (idVotacion)
+);
+
+CREATE TABLE ConsultaPopular (
+idVotacion bigint NOT NULL,
+CONSTRAINT PK_ConsultaPopular PRIMARY KEY(idVotacion),
+CONSTRAINT FK_VotacionXConsutlaPopular FOREIGN KEY (idVotacion) REFERENCES Votacion (idVotacion)
+);
+
+CREATE TABLE CandidatoElectoral (
+idVotacion bigint NOT NULL,
+Numero int NOT NULL,
+CantVotos int DEFAULT 0,
+DNI bigint,
+idPartido bigint,
+CONSTRAINT PK_CandidatoElectoral PRIMARY KEY(idVotacion, Numero),
+CONSTRAINT FK_PartidoPoliticoXCandidatoElectoral FOREIGN KEY (idPartido) REFERENCES PartidoPolitico (idPartido),
+CONSTRAINT FK_EleccionCargoPublicoXCandidatoElectoral FOREIGN KEY (idVotacion) REFERENCES EleccionCargoPublico (idVotacion)
+);
+
+CREATE TABLE OpcionElectoral (
+idVotacion bigint NOT NULL,
+Numero int NOT NULL,
+descripcion char(20),
+cantVotos int DEFAULT 0,
+CONSTRAINT PK_OpcionElectoral PRIMARY KEY(idVotacion, Numero),
+CONSTRAINT FK_ConsultaPopularXOpcionElectoral FOREIGN KEY (idVotacion) REFERENCES ConsultaPopular (idVotacion)
+);
+
+CREATE TABLE AutoridadDeMesa (
+idAutoridad bigint NOT NULL AUTO_INCREMENT,
+tipo char(20),
+DNI bigint,
+NumeroMesa int,
+idVotacion bigint,
+CONSTRAINT PK_AutoridadDeMesa PRIMARY KEY(idAutoridad),
+CONSTRAINT FK_MesaElectoralXAutoridadDeMesa FOREIGN KEY (NumeroMesa) REFERENCES MesaElectoral (NumeroMesa),
+CONSTRAINT FK_VotacionXAutoridadDeMesa FOREIGN KEY (idVotacion) REFERENCES Votacion (idVotacion),
+CONSTRAINT FK_CiudadanoXAutoridadDeMesa FOREIGN KEY (DNI) REFERENCES Ciudadano (DNI)
+);
+
+CREATE TABLE FiscalDeMesa (
+idAutoridad bigint NOT NULL,
+idPartido bigint NOT NULL,
+CONSTRAINT PK_FiscalDeMesaXFiscalDeMesa PRIMARY KEY(idAutoridad, idPartido),
+CONSTRAINT FK_AutoridadDeMesaXFiscalDeMesa FOREIGN KEY (idAutoridad) REFERENCES AutoridadDeMesa (idAutoridad),
+CONSTRAINT FK_PartidoPoliticoXFiscalDeMesa FOREIGN KEY (idPartido) REFERENCES PartidoPolitico (idPartido)
+);
+
+CREATE TABLE Camioneta (
+idCamioneta bigint NOT NULL AUTO_INCREMENT,
+patente char(6),
+DNIResponsable bigint,
+CONSTRAINT PK_Camioneta PRIMARY KEY(idCamioneta),
+CONSTRAINT FK_CiudadanoXCamioneta FOREIGN KEY (DNIResponsable) REFERENCES Ciudadano (DNI)
+);
+
+CREATE TABLE Camioneta_X_CentroDeVotacion (
+idCentro bigint NOT NULL,
+idCamioneta bigint NOT NULL,
+CONSTRAINT PK_Camioneta_X_CentroDeVotacion PRIMARY KEY(idCentro, idCamioneta),
+CONSTRAINT FK_CentroDeVotacionXCamioneta_X_CentroDeVotacion FOREIGN KEY (idCentro) REFERENCES CentroDeVotacion (idCentro),
+CONSTRAINT FK_CamionetaXCamioneta_X_CentroDeVotacion FOREIGN KEY (idCamioneta) REFERENCES Camioneta (idCamioneta)
+);
+
+CREATE TABLE VotoEn (
+DNI bigint NOT NULL,
+idVotacion bigint NOT NULL,
+NumeroMesa int,
+fecha datetime,
+CONSTRAINT PK_VotoEn PRIMARY KEY(DNI, idVotacion),
+CONSTRAINT FK_CiudadanoXVotoEn FOREIGN KEY (DNI) REFERENCES Ciudadano (DNI),
+CONSTRAINT FK_VotacionXVotoEn FOREIGN KEY (idVotacion) REFERENCES Votacion (idVotacion),
+CONSTRAINT FK_MesaElectoralXVotoEn FOREIGN KEY (NumeroMesa) REFERENCES MesaElectoral (NumeroMesa)
+);
+
+CREATE TABLE CandidatoEsVotado (
+idVotacion bigint NOT NULL,
+NumeroCandidato int NOT NULL,
+NumeroMesa int NOT NULL,
+cantVotos int DEFAULT 0,
+CONSTRAINT PK_EsVotadoCandidato PRIMARY KEY(NumeroMesa, idVotacion, NumeroCandidato),
+CONSTRAINT FK_MesaElectoralXCandidatoEsVotado FOREIGN KEY (NumeroMesa) REFERENCES MesaElectoral (NumeroMesa),
+CONSTRAINT FK_CandidatoElectoralXCandidatoEsVotado FOREIGN KEY (idVotacion, NumeroCandidato) REFERENCES CandidatoElectoral (idVotacion, Numero)
+);
+
+CREATE TABLE OpcionElectoralEsVotada (
+idVotacion bigint NOT NULL,
+NumeroOpcion int NOT NULL,
+NumeroMesa int NOT NULL,
+cantVotos int DEFAULT 0,
+CONSTRAINT PK_EsVotadaOpcion PRIMARY KEY(NumeroMesa, idVotacion, NumeroOpcion),
+CONSTRAINT FK_MesaElectoralXOpcionElectoralEsVotada FOREIGN KEY (NumeroMesa) REFERENCES MesaElectoral (NumeroMesa),
+CONSTRAINT FK_OpcionElectoralXOpcionElectoralEsVotada FOREIGN KEY (idVotacion, NumeroOpcion) REFERENCES OpcionElectoral (idVotacion, Numero)
+);
