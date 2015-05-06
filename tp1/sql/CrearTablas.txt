@@ -1,3 +1,7 @@
+CREATE DATABASE DB_GRUPO4_TP1;
+
+USE DB_GRUPO4_TP1;
+
 CREATE TABLE Provincia (
 idProvincia bigint NOT NULL AUTO_INCREMENT,
 nombre char(20),
