@@ -4,13 +4,13 @@ USE DB_GRUPO4_TP1;
 
 CREATE TABLE Provincia (
 idProvincia bigint NOT NULL AUTO_INCREMENT,
-nombre char(20),
+nombre char(40),
 CONSTRAINT PK_Provincia PRIMARY KEY(idProvincia)
 );
 
 CREATE TABLE Municipio (
 idMunicipio bigint NOT NULL AUTO_INCREMENT,
-nombre char(20),
+nombre char(40),
 idProvincia bigint,
 CONSTRAINT PK_Municipio PRIMARY KEY(idMunicipio),
 CONSTRAINT FK_ProvinciaXMunicipio FOREIGN KEY (idProvincia) REFERENCES Provincia (idProvincia)
@@ -18,8 +18,8 @@ CONSTRAINT FK_ProvinciaXMunicipio FOREIGN KEY (idProvincia) REFERENCES Provincia
 
 CREATE TABLE CentroDeVotacion (
 idCentro bigint NOT NULL AUTO_INCREMENT,
-direccion char(20),
-nombre char(20),
+direccion char(40),
+nombre char(40),
 idMunicipio bigint,
 CONSTRAINT PK_CentroDeVotacion PRIMARY KEY(idCentro),
 CONSTRAINT FK_MunicipioXCentroDeVotacion FOREIGN KEY (idMunicipio) REFERENCES Municipio (idMunicipio)
@@ -27,10 +27,10 @@ CONSTRAINT FK_MunicipioXCentroDeVotacion FOREIGN KEY (idMunicipio) REFERENCES Mu
 
 CREATE TABLE Ciudadano (
 DNI bigint NOT NULL,
-Nombre char(20),
+Nombre char(40),
 Apellido char(20),
 FechaNacimiento datetime,
-FechaIngresoPadro datetime,
+FechaIngresoPadron datetime,
 FechaDefuncion datetime,
 NumeroMesaPadron int,
 CONSTRAINT PK_Ciudadano PRIMARY KEY(DNI)
@@ -49,7 +49,7 @@ ALTER TABLE Ciudadano ADD FOREIGN KEY (NumeroMesaPadron) REFERENCES MesaElectora
 
 CREATE TABLE TipoVotacion (
 idTipoVotacion bigint NOT NULL AUTO_INCREMENT,
-Nombre char(20),
+Nombre char(40),
 CONSTRAINT PK_TipoVotacion PRIMARY KEY(idTipoVotacion)
 );
 
@@ -57,7 +57,7 @@ CREATE TABLE Votacion (
 idVotacion bigint NOT NULL AUTO_INCREMENT,
 fechaInicio datetime,
 fechaFin datetime,
-tipo char(20),
+tipo char(40),
 idTipoVotacion bigint,
 CONSTRAINT PK_Votacion PRIMARY KEY(idVotacion),
 CONSTRAINT FK_TipoVotacionXVotacion FOREIGN KEY (idTipoVotacion) REFERENCES TipoVotacion (idTipoVotacion)
@@ -81,7 +81,7 @@ CONSTRAINT FK_VotacionXMunicipioQueAbarcaVotacion FOREIGN KEY (idVotacion) REFER
 
 CREATE TABLE PartidoPolitico (
 idPartido bigint NOT NULL AUTO_INCREMENT,
-Nombre char(20),
+Nombre char(40),
 CONSTRAINT PK_PartidoPolitico PRIMARY KEY(idPartido)
 );
 
@@ -111,7 +111,7 @@ CONSTRAINT FK_EleccionCargoPublicoXCandidatoElectoral FOREIGN KEY (idVotacion) R
 CREATE TABLE OpcionElectoral (
 idVotacion bigint NOT NULL,
 Numero int NOT NULL,
-descripcion char(20),
+descripcion char(40),
 cantVotos int DEFAULT 0,
 CONSTRAINT PK_OpcionElectoral PRIMARY KEY(idVotacion, Numero),
 CONSTRAINT FK_ConsultaPopularXOpcionElectoral FOREIGN KEY (idVotacion) REFERENCES ConsultaPopular (idVotacion)
@@ -119,7 +119,7 @@ CONSTRAINT FK_ConsultaPopularXOpcionElectoral FOREIGN KEY (idVotacion) REFERENCE
 
 CREATE TABLE AutoridadDeMesa (
 idAutoridad bigint NOT NULL AUTO_INCREMENT,
-tipo char(20),
+tipo char(40),
 DNI bigint,
 NumeroMesa int,
 idVotacion bigint,
@@ -139,7 +139,7 @@ CONSTRAINT FK_PartidoPoliticoXFiscalDeMesa FOREIGN KEY (idPartido) REFERENCES Pa
 
 CREATE TABLE Camioneta (
 idCamioneta bigint NOT NULL AUTO_INCREMENT,
-patente char(6),
+patente char(7),
 DNIResponsable bigint,
 CONSTRAINT PK_Camioneta PRIMARY KEY(idCamioneta),
 CONSTRAINT FK_CiudadanoXCamioneta FOREIGN KEY (DNIResponsable) REFERENCES Ciudadano (DNI)
@@ -168,7 +168,7 @@ CREATE TABLE CandidatoEsVotado (
 idVotacion bigint NOT NULL,
 NumeroCandidato int NOT NULL,
 NumeroMesa int NOT NULL,
-cantVotos int DEFAULT 0,
+cantVotos int,
 CONSTRAINT PK_EsVotadoCandidato PRIMARY KEY(NumeroMesa, idVotacion, NumeroCandidato),
 CONSTRAINT FK_MesaElectoralXCandidatoEsVotado FOREIGN KEY (NumeroMesa) REFERENCES MesaElectoral (NumeroMesa),
 CONSTRAINT FK_CandidatoElectoralXCandidatoEsVotado FOREIGN KEY (idVotacion, NumeroCandidato) REFERENCES CandidatoElectoral (idVotacion, Numero)
@@ -178,8 +178,172 @@ CREATE TABLE OpcionElectoralEsVotada (
 idVotacion bigint NOT NULL,
 NumeroOpcion int NOT NULL,
 NumeroMesa int NOT NULL,
-cantVotos int DEFAULT 0,
+cantVotos int,
 CONSTRAINT PK_EsVotadaOpcion PRIMARY KEY(NumeroMesa, idVotacion, NumeroOpcion),
 CONSTRAINT FK_MesaElectoralXOpcionElectoralEsVotada FOREIGN KEY (NumeroMesa) REFERENCES MesaElectoral (NumeroMesa),
 CONSTRAINT FK_OpcionElectoralXOpcionElectoralEsVotada FOREIGN KEY (idVotacion, NumeroOpcion) REFERENCES OpcionElectoral (idVotacion, Numero)
 );
+
+
+insert into Provincia (nombre) values 
+('Buenos Aires'),
+('Cordoba'),
+('Jujuy');
+
+insert into Municipio (nombre, idProvincia) values 
+('Salsipuedes',2),
+('Bahía Blanca',1),
+('La Quiaca',3);
+
+insert into CentroDeVotacion (direccion, nombre, idMunicipio) values 
+('Laguna 68','Tecnica La Quiaca N18', 3), //Jujuy
+('San Martin 518', 'Primaria San Martin N101',1), //Cordoba
+('Mariano Acosta 699', 'Fragara Libertad N17',2); //Buenos Aires
+
+insert into Ciudadano (DNI, Nombre, Apellido, FechaNacimiento, FechaIngresoPadron, FechaDefuncion, NumeroMesaPadron) values 
+(35367980, 'Juan', 'Perez', '1990-05-15', '2008-05-15', NULL, NULL),
+(32367980, 'Miguel', 'Lopez', '1980-07-10', '1998-07-10', NULL, NULL),
+(36367980, 'Jorge', 'Borrelli', '1992-11-03', '2010-11-03', NULL, NULL),
+(29367980, 'Fabian', 'Valencia', '1970-03-03', '1988-03-03', NULL, NULL),
+(30367980, 'Joaquin', 'Benitez', '1975-12-12', '1993-12-12', NULL, NULL),
+(30367981, 'Fernanda', 'Caranta', '1975-12-12', '1993-12-12', NULL, NULL),
+(30367982, 'Florencia', 'Gomez', '1975-12-12', '1993-12-12', NULL, NULL),
+(30367983, 'Luis', 'Ortega', '1975-12-12', '1993-12-12', NULL, NULL),
+(30367984, 'Adolfo', 'Araujo', '1975-12-12', '1993-12-12', NULL, NULL),
+(30367985, 'Francisco', 'Ojeda', '1975-12-12', '1993-12-12', NULL, NULL),
+(30367986, 'Ana', 'Contino', '1975-12-12', '1993-12-12', NULL, NULL),
+(30367987, 'Elizabeth', 'Martinez', '1975-12-12', '1993-12-12', NULL, NULL),
+(30367988, 'Emilio', 'Rodriguez', '1975-12-12', '1993-12-12', NULL, NULL),
+(30367989, 'Mariano', 'Arias', '1975-12-12', '1993-12-12', NULL, NULL),
+(30367990, 'Marcelo', 'Astilla', '1975-12-12', '1993-12-12', NULL, NULL),
+(30367991, 'Alma', 'Olivos', '1975-12-12', '1993-12-12', NULL, NULL),
+(30367992, 'Marcos', 'Paz', '1975-12-12', '1993-12-12', NULL, NULL);
+
+insert into MesaElectoral (DNITecnico, idCentro) values 
+(35367980,1), //Jujuy
+(32367980,2), //Cordoba
+(36367980,3); //Buenos Aires
+
+UPDATE Ciudadano SET NumeroMesaPadron = 1 WHERE DNI = 35367980;
+UPDATE Ciudadano SET NumeroMesaPadron = 2 WHERE DNI = 32367980;
+UPDATE Ciudadano SET NumeroMesaPadron = 3 WHERE DNI = 36367980;
+UPDATE Ciudadano SET NumeroMesaPadron = 3 WHERE DNI = 29367980;
+UPDATE Ciudadano SET NumeroMesaPadron = 3 WHERE DNI = 30367980;
+UPDATE Ciudadano SET NumeroMesaPadron = 1 WHERE DNI = 30367981;
+UPDATE Ciudadano SET NumeroMesaPadron = 1 WHERE DNI = 30367982;
+UPDATE Ciudadano SET NumeroMesaPadron = 1 WHERE DNI = 30367983;
+UPDATE Ciudadano SET NumeroMesaPadron = 2 WHERE DNI = 30367984;
+UPDATE Ciudadano SET NumeroMesaPadron = 2 WHERE DNI = 30367985;
+UPDATE Ciudadano SET NumeroMesaPadron = 2 WHERE DNI = 30367986;
+UPDATE Ciudadano SET NumeroMesaPadron = 3 WHERE DNI = 30367987;
+UPDATE Ciudadano SET NumeroMesaPadron = 3 WHERE DNI = 30367988;
+UPDATE Ciudadano SET NumeroMesaPadron = 3 WHERE DNI = 30367989;
+UPDATE Ciudadano SET NumeroMesaPadron = 1 WHERE DNI = 30367990;
+UPDATE Ciudadano SET NumeroMesaPadron = 2 WHERE DNI = 30367991;
+UPDATE Ciudadano SET NumeroMesaPadron = 3 WHERE DNI = 30367992;
+
+insert into TipoVotacion (Nombre) values 
+('Eleccion Nacional'),
+('Eleccion Provincial'),
+('Consulta Provincial');
+
+insert into Votacion (fechaInicio, fechaFin, tipo, idTipoVotacion) values 
+('2011-03-03 08:00:00', '2011-03-03 18:00:00', 'Eleccion Cargo Publico', 1),
+('2012-03-03 08:00:00', '2012-03-04 18:00:00', 'Consulta Popular', 3);
+
+insert into ProvinciaQueAbarcaVotacion (idProvincia, idVotacion) values 
+(1,1),
+(2,1),
+(3,1),
+(3,2);
+
+insert into MunicipioQueAbarcaVotacion (idMunicipio, idVotacion) values 
+(1,1),
+(2,1),
+(3,1),
+(3,2);
+
+insert into PartidoPolitico (Nombre) values
+('Partido Socialista'),
+('Partido Comunista');
+
+insert into EleccionCargoPublico (idVotacion) values
+(1);
+
+insert into ConsultaPopular (idVotacion) values
+(2);
+
+insert into CandidatoElectoral (idVotacion, Numero, DNI, idPartido) values
+(1,1,29367980,1),
+(1,2,30367980,2);
+
+insert into OpcionElectoral (idVotacion, Numero, descripcion) values
+(2,1,'Apruebo Ley N375'),
+(2,2,'Rechazo Ley N375');
+
+insert into AutoridadDeMesa (tipo, DNI, NumeroMesa, idVotacion) values
+('Presidente de Mesa', 30367981, 1, 1),
+('Vicepresidente de Mesa', 30367982, 1, 1),
+('Fiscal de Mesa', 30367983, 1, 1),
+('Presidente de Mesa', 30367984, 2, 1),
+('Vicepresidente de Mesa', 30367985, 2, 1),
+('Fiscal de Mesa', 30367986, 2, 1),
+('Presidente de Mesa', 30367987, 3, 1),
+('Vicepresidente de Mesa', 30367988, 3, 1),
+('Fiscal de Mesa', 30367989, 3, 1),
+('Presidente de Mesa', 30367981, 1, 2),
+('Vicepresidente de Mesa', 30367982, 1, 2),
+('Fiscal de Mesa', 30367983, 1, 2);
+
+insert into FiscalDeMesa (idAutoridad, idPartido) values
+(3, 1),
+(6, 2),
+(9, 2),
+(12, 1);
+
+insert into Camioneta (patente, DNIResponsable) values
+('SOS 911', 30367990),
+('IND 666', 30367991),
+('NOT 801', 30367992);
+
+insert into Camioneta_X_CentroDeVotacion (idCentro, idCamioneta) values
+(1, 1),
+(2, 2),
+(3, 3);
+
+insert VotoEn (DNI, idVotacion, NumeroMesa, fecha) values
+(35367980, 1, 1, '2011-03-03 09:10:00'),
+(32367980, 1, 2, '2011-03-03 10:10:00'),
+(36367980, 1, 3, '2011-03-03 10:30:00'),
+(29367980, 1, 3, '2011-03-03 11:40:00'),
+(30367980, 1, 3, '2011-03-03 12:00:00'),
+(30367981, 1, 1, '2011-03-03 12:15:00'),
+(30367982, 1, 1, '2011-03-03 12:44:00'),
+(30367983, 1, 1, '2011-03-03 13:05:00'),
+(30367984, 1, 2, '2011-03-03 13:30:00'),
+(30367985, 1, 2, '2011-03-03 14:03:00'),
+(30367986, 1, 2, '2011-03-03 14:27:00'),
+(30367987, 1, 3, '2011-03-03 15:09:00'),
+(30367988, 1, 3, '2011-03-03 15:50:00'),
+(30367989, 1, 3, '2011-03-03 16:17:00'),
+(30367990, 1, 1, '2011-03-03 16:55:00'),
+(30367991, 1, 2, '2011-03-03 17:30:00'),
+(30367992, 1, 3, '2011-03-03 17:55:00'),
+(35367980, 2, 1, '2011-03-03 09:30:00'),
+(30367981, 2, 1, '2011-03-03 11:15:00'),
+(30367982, 2, 1, '2011-03-03 15:44:00'),
+(30367983, 2, 1, '2011-03-03 16:15:00'),
+(30367990, 2, 1, '2011-03-03 17:30:00');
+
+insert CandidatoEsVotado (idVotacion, NumeroCandidato, NumeroMesa, cantVotos) values
+(1, 1, 1, 3),
+(1, 2, 1, 2),
+(1, 1, 2, 3),
+(1, 2, 2, 2),
+(1, 1, 3, 6),
+(1, 2, 3, 1);
+
+insert OpcionElectoralEsVotada (idVotacion, NumeroOpcion, NumeroMesa, cantVotos) values
+(2,1,3,3),
+(2,2,3,2);
+
