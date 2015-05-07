@@ -184,22 +184,6 @@ CONSTRAINT FK_MesaElectoralXOpcionElectoralEsVotada FOREIGN KEY (NumeroMesa) REF
 CONSTRAINT FK_OpcionElectoralXOpcionElectoralEsVotada FOREIGN KEY (idVotacion, NumeroOpcion) REFERENCES OpcionElectoral (idVotacion, Numero)
 );
 
-
-insert into Provincia (nombre) values 
-('Buenos Aires'),
-('Cordoba'),
-('Jujuy');
-
-insert into Municipio (nombre, idProvincia) values 
-('Salsipuedes',2),
-('Bahía Blanca',1),
-('La Quiaca',3);
-
-insert into CentroDeVotacion (direccion, nombre, idMunicipio) values 
-('Laguna 68','Tecnica La Quiaca N18', 3), //Jujuy
-('San Martin 518', 'Primaria San Martin N101',1), //Cordoba
-('Mariano Acosta 699', 'Fragara Libertad N17',2); //Buenos Aires
-
 insert into Ciudadano (DNI, Nombre, Apellido, FechaNacimiento, FechaIngresoPadron, FechaDefuncion, NumeroMesaPadron) values 
 (35367980, 'Juan', 'Perez', '1990-05-15', '2008-05-15', NULL, NULL),
 (32367980, 'Miguel', 'Lopez', '1980-07-10', '1998-07-10', NULL, NULL),
@@ -219,10 +203,25 @@ insert into Ciudadano (DNI, Nombre, Apellido, FechaNacimiento, FechaIngresoPadro
 (30367991, 'Alma', 'Olivos', '1975-12-12', '1993-12-12', NULL, NULL),
 (30367992, 'Marcos', 'Paz', '1975-12-12', '1993-12-12', NULL, NULL);
 
+insert into Provincia (nombre) values 
+('Buenos Aires'),
+('Cordoba'),
+('Jujuy');
+
+insert into Municipio (nombre, idProvincia) values 
+('Salsipuedes',2),
+('Bahía Blanca',1),
+('La Quiaca',3);
+
+insert into CentroDeVotacion (direccion, nombre, idMunicipio) values 
+('Laguna 68','Tecnica La Quiaca N18', 3), 
+('San Martin 518', 'Primaria San Martin N101',1), 
+('Mariano Acosta 699', 'Fragara Libertad N17',2); 
+
 insert into MesaElectoral (DNITecnico, idCentro) values 
-(35367980,1), //Jujuy
-(32367980,2), //Cordoba
-(36367980,3); //Buenos Aires
+(35367980,1), 
+(32367980,2), 
+(36367980,3); 
 
 UPDATE Ciudadano SET NumeroMesaPadron = 1 WHERE DNI = 35367980;
 UPDATE Ciudadano SET NumeroMesaPadron = 2 WHERE DNI = 32367980;
