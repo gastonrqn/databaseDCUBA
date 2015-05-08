@@ -1,0 +1,30 @@
+SELECT vo.idVotacion, ce.DNI, sum(ce.CantVotos) 
+FROM Votacion vo 
+JOIN CandidatoElectoral ce ON vo.idVotacion = ce.idVotacion 
+JOIN ProvinciaQueAbarcaVotacion provXvot ON provXvot.idVotacion = vo.idVotacion
+JOIN TipoVotacion tp ON vo.idTipoVotacion = tp.idTipoVotacion
+WHERE tp.Nombre = 'Eleccion a Gobernador' AND vo.idVotacion not in (
+  SELECT v1.idVotacion 
+  FROM 
+  Votacion v1,
+  Votacion v2,
+  Votacion v3,
+  Votacion v4,
+  Votacion v5,
+  Votacion v6,
+  TipoVotacion tv
+  WHERE v1.idVotacion < v2.idVotacion 
+  AND v2.idVotacion < v3.idVotacion
+  AND v3.idVotacion < v4.idVotacion
+  AND v4.idVotacion < v5.idVotacion
+  AND v5.idVotacion < v6.idVotacion
+  AND tv.Nombre='Eleccion a Gobernador'
+  AND v1.idTipoVotacion = tv.idTipoVotacion
+  AND v2.idTipoVotacion = tv.idTipoVotacion
+  AND v3.idTipoVotacion = tv.idTipoVotacion
+  AND v4.idTipoVotacion = tv.idTipoVotacion
+  AND v5.idTipoVotacion = tv.idTipoVotacion
+  AND v6.idTipoVotacion = tv.idTipoVotacion
+)
+GROUP BY ce.DNI 
+HAVING (sum(ce.CantVotos)*5) >= (SELECT sum(CantVotos) FROM Votacion v JOIN CandidatoElectoral ce2 ON v.idVotacion = ce2.idVotacion WHERE v.idTipoVotacion = 1) ;
