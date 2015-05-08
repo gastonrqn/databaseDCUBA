@@ -1,19 +1,33 @@
 \begin{itemize}
-	\item Si un ciudadano es fiscal de una mesa en una elección, debe pertenecer a un partido político en esa misma elección.
-	\item Los fiscales de una misma mesa son de distintos partidos políticos.
-	\item Si un ciudadano es candidato en una elección, debe pertenecer a un partido político en esa misma elección.
-	\item Si un ciudadano es fiscal y candidato en una misma elección, entonces en ambas relaciones debe estar asociado al mismo partido político.
-	\item Si un ciudadano es ganador en una elección, debe ser candidato en la misma elección. Ganador debe ser el candidato con más cantVotos de esa elección
-	\item Una elección cumple que el atributo “fechaFin” es menor a la fecha actual si y sólo si tiene un ganador (ciudadano) asociado.
-	\item Una Mesa Electoral no puede emitir votos después de la “fechaFin” ni antes de la “fechaInicio” de la elección a la que corresponde.
-	\item La elección tiene mesas que pertenecen a un centro de votación que a su vez se encuentra en un municipio. Este municipio debe ser alguno de los municipios que abarca la elección o debe pertenecer a alguna de las provincias que abarca la elección.
-	\item La elección debe abarcar al menos un municipio o una provincia.
-	\item Para cada elección, todo ciudadano es o bien fiscal, o bien presidente, o bien vicepresidente, o bien técnico, o ninguna de las anteriores, de una única mesa (en esa elección).
-	\item Si una elección abarca al menos un Municipio, entonces no abarca a ninguna Provincia, y viceversa.
-	\item Dado un Centro de Votación, que tiene asociado un Municipio, todas las elecciones en las cuales participan alguna de sus mesas tienen que abarcar a este Municipio, ya sea porque las elecciones abarcan al mismo, o porque abarcan a una provincia la cual el Municipio pertenezca.
-	\item Dada una elección en un municipio, todas las mesas de dicha elección deben contener a este Municipio.
-	\item Una mesa emite voto a un ciudadano que es candidato en esa elección.
-	\item La fecha en la que vota un ciudadano en una elección está entre la “fechaInicio” y “fechaFin” de la misma.
-	\item Cada MESA tiene 1 PRESIDENTE DE MESA, 1 VICEPRESIDENTE DE MESA, 1 TECNICO y varios fiscales.
-	\item La cantidad de votos obtenidos en una votacion por un CANDIDATO ELECTORAL o una OPCION ELECTORAL siempre es igual a la suma de la cantidad de votos que obtuvo en todas las MESAS ELECTORALES de dicha votacion
+	\item {\bf De las interrelaciones}
+	\begin{itemize}
+		\item Los fiscales de una misma mesa son de distintos partidos políticos.
+		\item Si un ciudadano es fiscal y candidato en una misma elección, entonces en ambas relaciones debe estar asociado al mismo partido político.
+		\item Una votación se relaciona con al menos un municipio ó una provincia, pero no puede estar relacionado con un municipio y una provincia
+		a la vez (es decir que los escenarios posibles son: votación que abarca de uno a muchos municipios o votación que abarca de una a muchas
+		provincias, pero no puede abarcar municipios y provincias).
+		\item Para cada elección, todo ciudadano es o bien fiscal, o bien presidente, o bien vicepresidente, o bien técnico, o ninguna de las anteriores, de una única mesa (en esa elección) (es decir que no puede haber un ciudadano que cumpla dos roles de esos en la misma votación).
+		\item Dada una votación, participa en la relación VotóEn sólo las mesas que pertenecen a centros de votación cuyo municipio (o la pronvincia
+		de éste) es abarcado por la votación.
+		\item Un candidato o una opción electoral sólo pueden ser votados en mesas que pertenecen a algún centro de votación cuyo municipio (o la
+		provincia de éste) es abarcado por la votación.
+		\item Cada mesa tiene exactamente un presidente, un vicepresidente, y cero o más fiscales.
+		\item Si un ciudadano tiene fechaDeDefunción distinto de null, entonces no puede participar en ninguna relación asociada a una votación
+		con fechaInicio mayor a fechaDeDefunción.
+		\item Un ciudadano no puede participar en ninguna relación asociada a una votación tal que fechaInicio sea anterior a fechaIngresoPadrón del
+		ciudadano.
+	\end{itemize}
+	
+	\item {\bf De los atributos}
+	\begin{itemize}
+		\item La relación VotóEn no puede tener el atributo fecha mayor a fechaFin ni menor a fechaInicio de la votación a la que corresponde.
+		\item Una elección cumple que el atributo fechaFin es menor a fechaActual y ninguno de ellos es nulo.
+		\item La cantidad de votos de un candidato electoral debe ser igual a la suma de la cantidad de votos en cada tupla de la relación esVotado
+		(asociadas a ese candidato).
+		\item La cantidad de votos de una opción electoral debe ser igual a la suma de la cantidad de votos en cada tupla de la relación esVotada
+		(asociadas a esa opción electoral).
+		\item Los atributos cantVotos de las entidades opción electoral y candidato electoral, y de las interrelaciones esVotado y esVotada, son todos
+		no nulos y mayores o iguales que cero.
+		\item El atributo fechaIngresoPadrón de un ciudadano debe ser mayor que fechaDeNacimiento y menor que fechaDeDefunción.
+	\end{itemize}
 \end{itemize}
