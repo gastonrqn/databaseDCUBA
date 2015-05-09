@@ -1,0 +1,84 @@
+\begin{itemize}
+
+\item
+DELIMITER \$\$ \\
+CREATE PROCEDURE GanadoresDelÚltimoAño \\
+BEGIN \\
+select ce1.Numero \\
+from CandidatoElectoral ce1 \\ 
+where \\
+  ((ce1.CantVotos, ce1.idVotacion) in ( \\
+    select max(ce2.CantVotos), ce2.idVotacion \\
+    from CandidatoElectoral ce2  \\
+    group by idVotacion)) \\
+  and \\
+  (ce1.idVotacion = \\
+  (select v.idVotacion \\ 
+   from Votacion v \\
+   where \\
+     year(v.fechaInicio) = year(now()) and \\
+     v.fechaFin $<$ now())); \\
+END \$\$ \\
+
+\item
+DELIMITER \$\$ \\
+CREATE PROCEDURE ultimos5votantesPorCentroPorVotacion \\
+(IN idVot bigint) \\
+BEGIN \\
+  SELECT DISTINCT ve\_final.DNI, me\_final.idCentro \\
+  FROM VotoEn ve\_final \\
+  JOIN MesaElectoral me\_final ON ve\_final.NumeroMesa = me\_final.NumeroMesa \\
+  WHERE ve\_final.idVotacion = idVot AND ve\_final.DNI NOT IN( \\
+    SELECT DISTINCT ve1.DNI \\
+    FROM VotoEn ve1 \\
+    JOIN VotoEn ve2 ON ve1.fecha $<$ ve2.fecha AND ve1.idVotacion = ve2.idvotacion \\
+    JOIN VotoEn ve3 ON ve2.fecha $<$ ve3.fecha AND ve1.idVotacion = ve3.idvotacion \\
+    JOIN VotoEn ve4 ON ve3.fecha $<$ ve4.fecha AND ve1.idVotacion = ve4.idvotacion \\
+    JOIN VotoEn ve5 ON ve4.fecha $<$ ve5.fecha AND ve1.idVotacion = ve5.idvotacion \\
+    JOIN VotoEn ve6 ON ve5.fecha $<$ ve6.fecha AND ve1.idVotacion = ve6.idvotacion \\
+    JOIN MesaElectoral me1 ON ve1.NumeroMesa = me1.NumeroMesa \\
+    JOIN MesaElectoral me2 ON ve2.NumeroMesa = me2.NumeroMesa AND me2.idCentro = me1.idCentro \\
+    JOIN MesaElectoral me3 ON ve3.NumeroMesa = me3.NumeroMesa AND me3.idCentro = me1.idCentro \\
+    JOIN MesaElectoral me4 ON ve4.NumeroMesa = me4.NumeroMesa AND me4.idCentro = me1.idCentro \\
+    JOIN MesaElectoral me5 ON ve5.NumeroMesa = me5.NumeroMesa AND me5.idCentro = me1.idCentro \\
+    JOIN MesaElectoral me6 ON ve6.NumeroMesa = me6.NumeroMesa AND me6.idCentro = me1.idCentro \\
+    WHERE ve1.idVotacion = idVot \\
+  ); \\
+END \$\$
+
+\item
+DELIMITER \$\$ \\
+CREATE PROCEDURE partidosPolíticosConMásDel20\% \\
+BEGIN \\
+ SELECT vo.idVotacion, ce.DNI, sum(ce.CantVotos)  \\
+FROM Votacion vo \\
+JOIN CandidatoElectoral ce ON vo.idVotacion = ce.idVotacion \\
+JOIN ProvinciaQueAbarcaVotacion provXvot ON provXvot.idVotacion = vo.idVotacion\\
+JOIN TipoVotacion tp ON vo.idTipoVotacion = tp.idTipoVotacion\\
+WHERE tp.Nombre = 'Eleccion a Gobernador' AND vo.idVotacion not in (\\
+  SELECT v1.idVotacion \\
+  FROM \\
+  Votacion v1,\\
+  Votacion v2,\\
+  Votacion v3,\\
+  Votacion v4,\\
+  Votacion v5,\\
+  Votacion v6,\\
+  TipoVotacion tv\\
+  WHERE v1.idVotacion $<$ v2.idVotacion \\
+  AND v2.idVotacion $<$ v3.idVotacion\\
+  AND v3.idVotacion $<$ v4.idVotacion\\
+  AND v4.idVotacion $<$ v5.idVotacion \\
+  AND v5.idVotacion $<$ v6.idVotacion \\
+  AND tv.Nombre='Eleccion a Gobernador' \\
+  AND v1.idTipoVotacion = tv.idTipoVotacion \\
+  AND v2.idTipoVotacion = tv.idTipoVotacion \\
+  AND v3.idTipoVotacion = tv.idTipoVotacion \\
+  AND v4.idTipoVotacion = tv.idTipoVotacion \\
+  AND v5.idTipoVotacion = tv.idTipoVotacion \\
+  AND v6.idTipoVotacion = tv.idTipoVotacion \\
+) \\
+GROUP BY ce.DNI  \\
+HAVING (sum(ce.CantVotos)$*$5) $>=$ (SELECT sum(CantVotos) FROM Votacion v JOIN CandidatoElectoral ce2 ON v.idVotacion = ce2.idVotacion WHERE \\ v.idTipoVotacion = 1) ; \\
+END \$\$ 
+\end{itemize}
