@@ -191,3 +191,8 @@ CONSTRAINT PK\_EsVotadaOpcion PRIMARY KEY(NumeroMesa, idVotacion, NumeroOpcion),
 CONSTRAINT FK\_MesaElectoralXOpcionElectoralEsVotada FOREIGN KEY (NumeroMesa) REFERENCES MesaElectoral (NumeroMesa),\\
 CONSTRAINT FK\_OpcionElectoralXOpcionElectoralEsVotada FOREIGN KEY (idVotacion, NumeroOpcion) REFERENCES OpcionElectoral (idVotacion, Numero)\\
 )\\
+
+
+\input{datos.tex}
+
+\input{triggers.tex}
