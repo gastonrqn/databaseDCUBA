@@ -1,0 +1,5 @@
+CREATE TRIGGER actualizacionCantidadVotosCandidatoInsert AFTER INSERT ON CandidatoEsVotado FOR EACH ROW UPDATE CandidatoElectoral ce SET ce.CantVotos = ce.CantVotos + NEW.cantVotos WHERE ce.Numero = NEW.NumeroCandidato;
+CREATE TRIGGER actualizacionCantidadVotosCandidatoUpdate AFTER UPDATE ON CandidatoEsVotado FOR EACH ROW UPDATE CandidatoElectoral ce SET ce.CantVotos = ce.CantVotos + NEW.cantVotos - OLD.cantVotos WHERE ce.Numero = NEW.NumeroCandidato;
+
+CREATE TRIGGER actualizacionCantidadVotosOpcionInsert AFTER INSERT ON OpcionElectoralEsVotada FOR EACH ROW UPDATE OpcionElectoral oe SET oe.cantVotos = ce.cantVotos + NEW.cantVotos WHERE oe.Numero = NEW.NumeroOpcion;
+CREATE TRIGGER actualizacionCantidadVotosOpcionUpdate AFTER UPDATE ON OpcionElectoralEsVotada FOR EACH ROW UPDATE OpcionElectoral oe SET oe.cantVotos = ce.cantVotos + NEW.cantVotos - OLD.cantVotos WHERE oe.Numero = NEW.NumeroOpcion;

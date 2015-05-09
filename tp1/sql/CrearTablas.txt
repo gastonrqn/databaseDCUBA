@@ -11,7 +11,7 @@ CONSTRAINT PK_Provincia PRIMARY KEY(idProvincia)
 CREATE TABLE Municipio (
 idMunicipio bigint NOT NULL AUTO_INCREMENT,
 nombre char(40),
-idProvincia bigint,
+idProvincia bigint NOT NULL,
 CONSTRAINT PK_Municipio PRIMARY KEY(idMunicipio),
 CONSTRAINT FK_ProvinciaXMunicipio FOREIGN KEY (idProvincia) REFERENCES Provincia (idProvincia)
 );
@@ -19,8 +19,8 @@ CONSTRAINT FK_ProvinciaXMunicipio FOREIGN KEY (idProvincia) REFERENCES Provincia
 CREATE TABLE CentroDeVotacion (
 idCentro bigint NOT NULL AUTO_INCREMENT,
 direccion char(40),
-nombre char(40),
-idMunicipio bigint,
+nombre char(40) NOT NULL,
+idMunicipio bigint NOT NULL,
 CONSTRAINT PK_CentroDeVotacion PRIMARY KEY(idCentro),
 CONSTRAINT FK_MunicipioXCentroDeVotacion FOREIGN KEY (idMunicipio) REFERENCES Municipio (idMunicipio)
 );
@@ -112,7 +112,7 @@ CREATE TABLE OpcionElectoral (
 idVotacion bigint NOT NULL,
 Numero int NOT NULL,
 descripcion char(40),
-cantVotos int DEFAULT 0,
+C,antVotos int DEFAULT 0,
 CONSTRAINT PK_OpcionElectoral PRIMARY KEY(idVotacion, Numero),
 CONSTRAINT FK_ConsultaPopularXOpcionElectoral FOREIGN KEY (idVotacion) REFERENCES ConsultaPopular (idVotacion)
 );
@@ -168,7 +168,7 @@ CREATE TABLE CandidatoEsVotado (
 idVotacion bigint NOT NULL,
 NumeroCandidato int NOT NULL,
 NumeroMesa int NOT NULL,
-cantVotos int,
+CantVotos int NOT NULL,
 CONSTRAINT PK_EsVotadoCandidato PRIMARY KEY(NumeroMesa, idVotacion, NumeroCandidato),
 CONSTRAINT FK_MesaElectoralXCandidatoEsVotado FOREIGN KEY (NumeroMesa) REFERENCES MesaElectoral (NumeroMesa),
 CONSTRAINT FK_CandidatoElectoralXCandidatoEsVotado FOREIGN KEY (idVotacion, NumeroCandidato) REFERENCES CandidatoElectoral (idVotacion, Numero)
@@ -178,7 +178,7 @@ CREATE TABLE OpcionElectoralEsVotada (
 idVotacion bigint NOT NULL,
 NumeroOpcion int NOT NULL,
 NumeroMesa int NOT NULL,
-cantVotos int,
+CantVotos int NOT NULL,
 CONSTRAINT PK_EsVotadaOpcion PRIMARY KEY(NumeroMesa, idVotacion, NumeroOpcion),
 CONSTRAINT FK_MesaElectoralXOpcionElectoralEsVotada FOREIGN KEY (NumeroMesa) REFERENCES MesaElectoral (NumeroMesa),
 CONSTRAINT FK_OpcionElectoralXOpcionElectoralEsVotada FOREIGN KEY (idVotacion, NumeroOpcion) REFERENCES OpcionElectoral (idVotacion, Numero)
@@ -341,7 +341,7 @@ insert VotoEn (DNI, idVotacion, NumeroMesa, fecha) values
 (30367983, 2, 1, '2011-03-03 16:15:00'),
 (30367990, 2, 1, '2011-03-03 17:30:00');
 
-insert CandidatoEsVotado (idVotacion, NumeroCandidato, NumeroMesa, cantVotos) values
+insert CandidatoEsVotado (idVotacion, NumeroCandidato, NumeroMesa, CantVotos) values
 (1, 1, 1, 3),
 (1, 2, 1, 2),
 (1, 1, 2, 3),
@@ -349,7 +349,7 @@ insert CandidatoEsVotado (idVotacion, NumeroCandidato, NumeroMesa, cantVotos) va
 (1, 1, 3, 6),
 (1, 2, 3, 1);
 
-insert OpcionElectoralEsVotada (idVotacion, NumeroOpcion, NumeroMesa, cantVotos) values
+insert OpcionElectoralEsVotada (idVotacion, NumeroOpcion, NumeroMesa, CantVotos) values
 (2,1,3,3),
 (2,2,3,2);
 
