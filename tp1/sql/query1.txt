@@ -1,0 +1,16 @@
+select ce1.Numero 
+from CandidatoElectoral ce1 
+where 
+	((ce1.CantVotos, ce1.idVotacion) in 
+		(select max(ce2.CantVotos), ce2.idVotacion 
+		from CandidatoElectoral ce2  
+		group by idVotacion)) 
+	and 
+	(ce1.idVotacion = 	
+		(select v.idVotacion 
+		from Votacion v 
+		where 
+			year(v.fechaInicio) = year(now())
+			and 
+			v.fechaFin < now()));
+

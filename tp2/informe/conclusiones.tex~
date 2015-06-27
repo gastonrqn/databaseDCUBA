@@ -1,0 +1,17 @@
+El proceso de construcción de una base de datos es un proceso circular
+que comienza con un modelo de entidad relación, continúa con el pasaje
+correspondiente a modelo relacional, y sigue con un esquema físico.
+Esto se repite iterativamente hasta refinar el modelo y contribuír
+a la eficiencia de las consultas más solicitadas.
+
+Consideramos que la etapa más importante del proceso es la creación del
+modelo de entidad relación dado que del mismo derivan las demás etapas.
+Además el DER y el MR permiten documentar el modelo de datos para su
+uso y modificación a futuro.
+
+El motor elegido MySQL tiene las siguientes desventajas:
+\begin{itemize}
+	\item No permite el uso de CHECKs (lo permite sintácticamente pero
+	es ignorado por el motor). Hay que simularlos con TRIGGERs.
+	\item No permite usar LIMIT en una subquery.
+\end{itemize}

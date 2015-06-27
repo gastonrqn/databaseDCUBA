@@ -1,0 +1,19 @@
+SELECT DISTINCT ve_final.DNI, me_final.idCentro
+  FROM VotoEn ve_final
+  JOIN MesaElectoral me_final ON ve_final.NumeroMesa = me_final.NumeroMesa
+  WHERE ve_final.idVotacion = 1 AND ve_final.DNI NOT IN(
+    SELECT DISTINCT ve1.DNI
+    FROM VotoEn ve1
+    JOIN VotoEn ve2 ON ve1.fecha < ve2.fecha AND ve1.idVotacion = ve2.idvotacion
+    JOIN VotoEn ve3 ON ve2.fecha < ve3.fecha AND ve1.idVotacion = ve3.idvotacion
+    JOIN VotoEn ve4 ON ve3.fecha < ve4.fecha AND ve1.idVotacion = ve4.idvotacion
+    JOIN VotoEn ve5 ON ve4.fecha < ve5.fecha AND ve1.idVotacion = ve5.idvotacion
+    JOIN VotoEn ve6 ON ve5.fecha < ve6.fecha AND ve1.idVotacion = ve6.idvotacion
+    JOIN MesaElectoral me1 ON ve1.NumeroMesa = me1.NumeroMesa
+    JOIN MesaElectoral me2 ON ve2.NumeroMesa = me2.NumeroMesa AND me2.idCentro = me1.idCentro
+    JOIN MesaElectoral me3 ON ve3.NumeroMesa = me3.NumeroMesa AND me3.idCentro = me1.idCentro
+    JOIN MesaElectoral me4 ON ve4.NumeroMesa = me4.NumeroMesa AND me4.idCentro = me1.idCentro
+    JOIN MesaElectoral me5 ON ve5.NumeroMesa = me5.NumeroMesa AND me5.idCentro = me1.idCentro
+    JOIN MesaElectoral me6 ON ve6.NumeroMesa = me6.NumeroMesa AND me6.idCentro = me1.idCentro
+    WHERE ve1.idVotacion = 1
+  );
