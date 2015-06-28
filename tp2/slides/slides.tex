@@ -1,0 +1,145 @@
+\documentclass[10pt]{beamer}
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[latin,spanish]{babel}
+\usepackage{fontenc}
+\usepackage{algpseudocode}
+\usetheme{boxes}
+\usecolortheme{dolphin}
+
+\beamertemplatenavigationsymbolsempty  % sacar la barra de navegacion
+
+\hypersetup{pdfstartview={Fit}} % fits the presentation to the window when first displayed
+
+\author{Heredia · Requeni · Vega · Vita}
+\title[BDOG]{Bases de Datos\\ Orientadas a Grafos}
+%\subtitle{subtitle}
+%\date{dd/mm/aaaa}
+\institute[DC-FCEyN]{Departamento de Computaci\'on\\
+		    Facultad de Ciencias Exactas y Naturales}
+
+\begin{document}
+\begin{frame}
+ \titlepage
+\end{frame}
+
+
+\begin{frame}[t]
+\frametitle{¿Qué es una base de datos orientada a grafos?}
+\pause
+\begin{itemize}
+ \item El esquema se representan con grafos
+ \pause
+ \begin{center}
+  \includegraphics[width=\textwidth]{../informe/img/ej3_entidadEsquema.png}
+  \end{center}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]
+\frametitle{¿Qué es una base de datos orientada a grafos?}
+
+\begin{itemize}
+ \item Los datos se representan con grafos
+ \pause
+ \begin{center}
+  \includegraphics[width=\textwidth]{../informe/img/ej3_entidadInstancia.png}
+  \end{center}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]
+\frametitle{¿Qué es una base de datos orientada a grafos?}
+
+\begin{itemize}
+ \item Las consultas usan operaciones de grafos
+ \pause
+  \begin{itemize}
+   \item Caminos
+   \item Vecinos
+   \item Subgrafos
+   \item Conectividad
+   \item Diámetro
+   \item ...
+  \end{itemize}
+
+  \pause
+ \begin{center}
+  \includegraphics[width=0.6\textwidth]{../informe/img/ej2_cypher.png}
+  \end{center}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]
+ \frametitle{¿Por qué usar grafos?}
+ \pause
+ 
+ \begin{block}{Escenario}
+  Tenemos un conjunto de datos donde predominan las relaciones entre entidades y/o la topología de los mismos.
+ \end{block}
+ 
+ \vspace{0.3cm}
+ \pause
+ \begin{itemize}[<+->]
+  \item Las bases relacionales modelan las interrelaciones con FKs y joins.
+  \item Las bases orientadas a grafos las modelan con ejes.
+ \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[t]
+ \frametitle{¿Por qué usar grafos?}
+
+ \begin{center}
+\includegraphics[width=0.6\textwidth]{../informe/img/ej1_relacional.png}
+
+\pause
+\includegraphics[width=0.6\textwidth]{../informe/img/ej1_grafo.png}
+\end{center}
+ 
+\end{frame}
+
+
+
+
+\begin{frame}[t]
+ \frametitle{¿Por qué usar grafos?}
+ \begin{block}{Escenario}
+  Tenemos un conjunto de datos donde predominan las relaciones entre entidades y/o la topología de los mismos.
+ \end{block}
+ 
+ \vspace{1cm}
+ \begin{itemize}
+  \item Las bases relacionales modelan las interrelaciones con FKs y joins.
+    \begin{itemize}[<+->]
+      \item<2-> Costo muy alto para obtener datos significativos.
+      \item<4-> Consultas SQL muy complejas cuando hay muchas tablas o recursión.
+    \end{itemize}
+  \item Las bases orientadas a grafos las modelan con ejes.
+    \begin{itemize}[<+->]
+      \item<3-> $O(1)$
+      \item<5-> Las consultas se realizan con pattern matching buscando caminos.
+    \end{itemize}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[t]
+ \frametitle{¿Por qué usar grafos?}
+ 
+  \begin{center}
+    \includegraphics[width=0.9\textwidth]{../informe/img/ej2_sql.png}
+
+    \pause
+    \includegraphics[width=0.4\textwidth]{../informe/img/ej2_cypher.png}
+   \end{center}
+\end{frame}
+
+  
+
+
+\end{document}

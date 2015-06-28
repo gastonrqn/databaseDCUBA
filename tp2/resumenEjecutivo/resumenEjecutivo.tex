@@ -29,7 +29,7 @@
 %%%%%%%%%% Configuración de Fancyhdr - Inicio %%%%%%%%%%
 \pagestyle{fancy}
 \thispagestyle{fancy}
-\lhead{Trabajo Práctico 2 · Bases de Datos}
+\lhead{Bases de Datos Orientadas a Grafos}
 \rhead{Heredia · Requeni · Vega · Vita}
 \renewcommand{\footrulewidth}{0.4pt}
 \cfoot{\thepage /\pageref{LastPage}}
@@ -78,83 +78,24 @@
 
 
 \begin{document}
-\pagenumbering{gobble} 
- \normalem
+\normalem
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Carátula                                                                  %%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-\thispagestyle{caratula}
-
-\begin{center}
-
-\includegraphics[height=2cm]{caratula/DC.png} 
-\hfill
-\includegraphics[height=2cm]{caratula/UBA.jpg} 
-
-\vspace{2cm}
-
-Departamento de Computación,\\
-Facultad de Ciencias Exactas y Naturales,\\
-Universidad de Buenos Aires
-
-\vspace{4cm}
-
-\begin{Huge}
-Trabajo Práctico 2
-\end{Huge}
-
-\vspace{0.5cm}
-
-\begin{huge}
-Bases de Datos Orientadas a Grafos
-\end{huge}
-
-\vspace{0.5cm}
-
-\begin{Large}
-Bases de Datos
-\end{Large}
-
-\vspace{1cm}
-
-Primer Cuatrimestre de 2015
-
-\vspace{3.5cm}
-
-\begin{Large}
-Grupo 4
-\end{Large}
-
-\vspace{0.5cm}
-
-\begin{tabular}{|c|c|c|}
-\hline
-Apellido y Nombre & LU & E-mail\\
-\hline
-Heredia, Martín  & 146/11 & {\tt martin.herediaf@gmail.com}\\
-Requeni, Gastón  & 400/11 & {\tt grequeni@hotmail.com}\\
-Vega, Leandro    & 698/11 & {\tt leandrogvega@gmail.com}\\
-Vita, Sebastián  & 149/11 & {\tt sebastian\_vita@yahoo.com.ar}\\
-\hline
-\end{tabular}
-
-\end{center}
-
-\newpage
 \pagenumbering{arabic} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Índice                                                                    %%
+%% Encabezado                                                                %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{center}
+\begin{Large}
+\underline{Bases de Datos Orientadas a Grafos}
+\end{Large}
 
-\tableofcontents
+\underline{Heredia, Requeni, Vega, Vita}
+ 
+\end{center}
 
-\newpage
+
 
 \section{Introducción}
 
@@ -169,9 +110,6 @@ Una base de datos orientada a grafos es un modelo de base de datos caracterizado
 
 Sobre estos modelos se pueden definir también restricciones que aseguren integridad y consistencia de datos, como puede ser la consistencia
 entre la instancia y el esquema, dependencias funcionales, dominio de las propiedades, etc.
-
-
-\newpage
 
 \section{Motivación}
 
@@ -201,13 +139,13 @@ Supongamos que tenemos empleados y departamentos. Cada empleado puede trabajar e
 muchos empleados. La base de datos relacional quedaría así:
 
 \begin{center}
-\includegraphics[width=0.5\textwidth]{img/ej1_relacional.png}
+\includegraphics[width=0.5\textwidth]{../informe/img/ej1_relacional.png}
 \end{center}
 
 Este mismo modelo implementado en una base de datos orientada a grafos, quedaría así:
 
 \begin{center}
-\includegraphics[width=0.5\textwidth]{img/ej1_grafo.png}
+\includegraphics[width=0.5\textwidth]{../informe/img/ej1_grafo.png}
 \end{center}
 
 Observemos que no fue necesario usar estructuras adicionales como la tabla {\tt Dept\_Member} para modelar las relaciones. Simplemente tendremos
@@ -219,13 +157,13 @@ es parte de la implementación de la base misma.
 Veamos otro ejemplo: Tenemos una única entidad empleado ({\tt EMPLOYEE}) con algunos atributos básicos y la relación ``reporta a'' ({\tt REPORTS\_TO}).
 
 \begin{center}
-\includegraphics[width=0.4\textwidth]{img/ej2_der.png}
+\includegraphics[width=0.4\textwidth]{../informe/img/ej2_der.png}
 \end{center}
 
 La implementación relacional consiste de una única tabla empleado con los mismo atributos y una columna extra para la FK al supervisor.
 
 \begin{center}
-\includegraphics[width=0.2\textwidth]{img/ej2_relacional.png}
+\includegraphics[width=0.2\textwidth]{../informe/img/ej2_relacional.png}
 \end{center}
 
 Supongamos que ``Andrew'' es el nombre del jefe y queremos obtener todos los empleados que reportan directamente al jefe y por cada uno de ellos
@@ -233,7 +171,7 @@ la cantidad de empleados que reportan directamente a ellos. Vamos a suponer que 
 Por ejemplo, la siguiente instancia:
 
 \begin{center}
-\includegraphics[width=\textwidth]{img/ej2_ejemploResultado.png}
+\includegraphics[width=\textwidth]{../informe/img/ej2_ejemploResultado.png}
 \end{center}
 
 Debería retornar:
@@ -257,13 +195,13 @@ Para resolver esto en SQL (sin usar recursión, que no siempre está disponible)
 y atributos):
 
 \begin{center}
-\includegraphics[width=0.7\textwidth]{img/ej2_sql.png}
+\includegraphics[width=0.7\textwidth]{../informe/img/ej2_sql.png}
 \end{center}
 
 Sin embargo, si usamos una base de datos orientada a grafos, usando el lenguaje Cypher, la consulta se simplifica considerablemente:
 
 \begin{center}
-\includegraphics[width=0.4\textwidth]{img/ej2_cypher.png}
+\includegraphics[width=0.4\textwidth]{../informe/img/ej2_cypher.png}
 \end{center}
 
 Las bases de datos relacionales soportan las relaciones recursivas mediante joins recursivos y usando selects anidados, mientras que en un grafo
@@ -277,80 +215,17 @@ Observar que el DER que ya conocemos sirve como esquema para este tipo de bases 
 lado también es importante observar que estas bases de datos podrían no tener esquema (permiten agregar interrelaciones y
 nuevas entidades de forma dinámica).
 
-\newpage
-
 \section{Modelo Teórico}
 
 Para estudiar el modelo teórico de las bases de datos orientadas a grafos, estudiaremos tres focos distintos: Las entidades, las interrelaciones
 y la integridad de los datos.
 
-\subsection{Entidades}
-Una entidad en una base de datos orientada a grafos es un nodo y se define en dos contextos distintos:
 \begin{itemize}
- \item Entidad del esquema: Define el \emph{tipo} asociado a una entidad, declarando atributos y el tipo de los mismos y todas las posibles
- interrelaciones que podría tener. Los atributos pueden representarse dentro de la estructura del nodo o bien como \emph{entidades primitivas}
- con las que la entidad se relaciona.
- \begin{center}
-  \includegraphics[width=0.6\textwidth]{img/ej3_entidadEsquema.png}
-  \end{center}
-  Cabe aclarar que no son las únicas formas de definir una entidad en un esquema pero presentamos las más representativas. Recordemos que hay
-  implementaciones que utilizan hipernodos o hiperejes y allí las entidades también se definen utilizando ese tipo de grafos.
- 
- \item Entidades de la instancia: Son entidades concretas, que tienen un identificador y un tipo (asociado al esquema). Además tienen atributos
- concretos y relaciones (con identificador y tipo) con otras entidades instanciadas. 
- \begin{center}
-  \includegraphics[width=0.6\textwidth]{img/ej3_entidadInstancia.png}
-  \end{center}
-  Nuevamente aclaramos que podría haber otras formas de representación, según el tipo de grafo que se utilice.
+ \item {\bf Entidades:} Son los nodos del grafo. Las entidades del esquema definen los ``tipos de datos'', especificando qué atributos
+ deben (o pueden) tener y de qué tipos, así como también con qué otras entidades se pueden relacionar. Por otro lado, las entidades de la instancia
+ son los nodos con los atributos y relaciones concretas, y tienen un id y un tipo (asociado al esquema).
 \end{itemize}
 
-Independientemente de la implementación, el uso de grafos para definir entidades permite crear tipos de datos no tradicionales, ya que no se está
-limitado a la estructura tabular de las bases relacionales. En este sentido los grafos más simples permiten definir esquemas similares a jerarquías
-de clases, objetos y colaboradores. Si a esto le sumamos hipernodos, podemos construir entidades que contengan sus propios grafos para representar la
-estructura interna, dando aún más flexibilidad para la creación de estructuras complejas.
 
-\subsection{Relaciones}
-
-\subsection{Integridad de Datos}
-
-
-\subsubsection{Separación entre el esquema y la instancia}
-Las bases de datos orientadas a grafos pueden tomar tres niveles de estructuramiento de los datos:
-\begin{itemize}
- \item Estructuradas: Se define un esquema y toda instancia debe respetar ese esquema de tal manera que toda entidad tenga todos los atributos que el
- esquema indica y sólo se puede relacionar con las entidades que el esquema especifica.
- \item Semi estructuradas: Se define un esquema pero las instancias lo respetan parcialmente. Una entidad en la instancia podría tener sólo algunos
- de los atributos declarados en el esquema, pero no puede tener atributos que no estén en el esquema. En cuanto a las relaciones, sólo puede usar las
- que se definieron en el esquema.
- \item No estructuradas: No se define un esquema. La instancia puede adoptar cualquier forma. La estructura de la base es dinámica. Ej: Neo4j.
-\end{itemize}
-Según qué nivel se implemente, la consistencia entre el esquema y la instancia puede ser más o menos laxa.
-
-
-
-\begin{comment}
-
-\section{Modelo Teórico}
-
-Schema vs Data instances
-Representación de entidades / relaciones (pag 12-13)
-
-* Restricciones que aseguran integridad: consistencia entre esquema e instancia. El grafo asegura que no puede haber foreing keys apuntando a nada.
-A veces los nodos tienen IDs. Asignar ``tipos'' a las entidades y a las relaciones (con el schema). Datos estructurados, semi estructurados, no estructurados.
-Declarar dependencias funcionales explicitamente.
-
-\section{Lenguajes de Consulta y Manipulación}
-
-Operaciones de teoría de grafos. Pattern Matching. Encontrar el shortest path. Neighborhood. Paths. 
-Leguajes graficos (pag18), de texto (cypher), 
-
-Cypher- http://neo4j.com/developer/cypher-query-language/
-http://neo4j.com/docs/stable/cypherdoc-finding-paths.html
-http://neo4j.com/developer/cypher/
-
-\section{Implementaciones}
-Hypernode Model, neo4j
-http://es.slideshare.net/thobe/an-overview-of-neo4j-internals
-\end{comment}
 \end{document}
 
