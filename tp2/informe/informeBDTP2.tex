@@ -158,18 +158,177 @@ Vita, Sebastián  & 149/11 & {\tt sebastian\_vita@yahoo.com.ar}\\
 
 \section{Introducción}
 
-¿Qué es?
+Una base de datos orientada a grafos es un modelo de base de datos caracterizado por:
+\begin{itemize}
+ \item \emph{Los datos y el esquema se modelan con grafos}: pueden ser grafos simples, dirigidos, con o sin etiquetas, o incluso pueden ser
+ generalizaciones de grafos que utilicen hipernodos (los nodos contienen grafos) o hiperejes (ejes que unen más de un nodo).
+ \item \emph{La manipulación de datos se expresa usando transformaciones de grafos}: Para crear, modificar y consultar los datos
+ de la base se utilizan conceptos relacionados a grafos como caminos, vecinos, subgrafos, conectividad, diámetro, etc. Para expresar estas
+ estructuras en un lenguaje de manipulación de datos se suele utilizar pattern matching.
+\end{itemize}
+
+Sobre estos modelos se pueden definir también restricciones que aseguren integridad y consistencia de datos, como puede ser la consistencia
+entre la instancia y el esquema, dependencias funcionales, dominio de las propiedades, etc.
+
+
+\newpage
 
 \section{Motivación}
 
-Interconectividad de datos, topología.
+El modelo de entidad relación plantea estructurar a los datos en entidades e interrelaciones entre entidades. Este modelo se puede pensar
+como un grafo donde cada entidad es un nodo y las interrelaciones son ejes entre ellos. Tanto los nodos como los ejes tienen labels y podrían
+tener atributos.
 
-Hacer los Joins (pag 5)
+Las bases de datos relacionales modelan a las entidades utilizando tablas. Las interrelaciones se modelan usando campos
+que identifican registros en otra tabla (Primary Keys y Foreign Keys) y es necesario introducir tablas intermedias para las
+interrelaciones ``muchos a muchos''. Para materializar una interrelación entre dos o más entidades, se introduce el concepto de Join (o junta) que
+mediante algoritmos muy costosos recorren las tablas involucradas uniendo los registros que se interrelacionan.
 
-Es similar a implementar el DER directamente (el mismo DER de siempre).
+Decimos que las relaciones son los \emph{ciudadanos de primera clase} de un modelo de datos cuando su importancia es mayor que la de las entidades y sus
+atributos. En tal escenario, las bases de datos relacionales pierden su utilidad, dado que la operación más utilizada pasa a ser el Join, que es a la vez
+la operación más costosa. Esto es porque las bases de datos relacionales están optimizadas para almacenar muchas tablas con muchos registros (muchas
+entidades con muchos atributos) y pocas interrelaciones. Cuantas más interrelaciones y tablas de interrelación aparecen, mayor es la cantidad de Joins
+que se necesitan para hacer consultas básicas, y en tal caso la complejidad temporal de las consultas aumenta exponencialmente.
 
-http://neo4j.com/developer/graph-db-vs-rdbms/
+Es en este contexto que ganan terreno las bases de datos orientadas a grafos, donde las relaciones son los \emph{ciudadanos de primera clase}.
+A diferencia de las relacionales, las orientadas a grafos optimizan y flexibilizan el modelado de las relaciones. La información que un Join genera
+en una base relacional es la misma información que el grafo almacena todo el tiempo usando ejes para unir nodos (que desde el punto de vista de un join,
+serían los registros que se unen).
 
+A continuación presentaremos un ejemplo y luego analizaremos en qué casos es conveniente usar una base de datos orientada a grafos.
+
+Supongamos que tenemos empleados y departamentos. Cada empleado puede trabajar en más de un departamento y en un departamento pueden trabajar
+muchos empleados. La base de datos relacional quedaría así:
+
+\begin{center}
+\includegraphics[width=0.7\textwidth]{img/ej1_relacional.png}
+\end{center}
+
+Este mismo modelo implementado en una base de datos orientada a grafos, quedaría así:
+
+\begin{center}
+\includegraphics[width=0.7\textwidth]{img/ej1_grafo.png}
+\end{center}
+
+Observemos que no fue necesario usar estructuras adicionales como la tabla {\tt Dept\_Member} para modelar las relaciones. Simplemente tendremos
+un nodo por cada persona y un nodo por cada departamento, y un eje por cada registro que antes había en la tabla {\tt Dept\_Member}. En este caso
+la complejidad espacial es similar, pero la complejidad temporal de hacer un Join es mucho mayor que simplemente acceder a un nodo persona y navegar a 
+sus vecinos de tipo {\tt Department} en $O(1)$. A esto nos referíamos cuando dijimos que en las bases de datos orientadas a grafos, el join ya está hecho,
+es parte de la implementación de la base misma.
+
+Veamos otro ejemplo: Tenemos una única entidad empleado ({\tt EMPLOYEE}) con algunos atributos básicos y la relación ``reporta a'' ({\tt REPORTS\_TO}).
+
+\begin{center}
+\includegraphics[width=0.4\textwidth]{img/ej2_der.png}
+\end{center}
+
+La implementación relacional consiste de una única tabla empleado con los mismo atributos y una columna extra para la FK al supervisor.
+
+\begin{center}
+\includegraphics[width=0.2\textwidth]{img/ej2_relacional.png}
+\end{center}
+
+Supongamos que ``Andrew'' es el nombre del jefe y queremos obtener todos los empleados que reportan directamente al jefe y por cada uno de ellos
+la cantidad de empleados que reportan directamente a ellos. Vamos a suponer que ``reportar directamente'' puede ser una jerarquía de hasta 3 niveles.
+Por ejemplo, la siguiente instancia:
+
+\begin{center}
+\includegraphics[width=\textwidth]{img/ej2_ejemploResultado.png}
+\end{center}
+
+Debería retornar:
+\begin{center}
+\begin{tabular}{| c | c |}
+\hline
+ {\bf Subordinate} & {\bf Total}\\
+\hline
+ Andrew & 3\\
+\hline
+ Bob & 3\\
+\hline
+ Alice & 2\\
+\hline
+ John & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+Para resolver esto en SQL (sin usar recursión, que no siempre está disponible) deberíamos usar una consulta similar a esta (difieren los nombres de tabla
+y atributos):
+
+\begin{center}
+\includegraphics[width=\textwidth]{img/ej2_sql.png}
+\end{center}
+
+Sin embargo, si usamos una base de datos orientada a grafos, usando el lenguaje Cypher, la consulta se simplifica considerablemente:
+
+\begin{center}
+\includegraphics[width=0.6\textwidth]{img/ej2_cypher.png}
+\end{center}
+
+Las bases de datos relacionales soportan las relaciones recursivas mediante joins recursivos y usando selects anidados, mientras que en un grafo
+simplemente tenemos que buscar caminos de distintas longitudes para acceder a todos los ancestros.
+
+Desde un punto de vista general, las bases de datos orientadas a grafos son útiles cuando las interrelaciones de entidades predominan, o dicho de
+otra manera, cuando es importante la interconectividad o la topología de los datos. Los usos típicos de estas bases de datos son las redes ferroviarias,
+redes sociales, datos geográficos y espaciales, genómica, biología, sistemas de recomendación, entre otros.
+
+Observar que el DER que ya conocemos sirve como esquema para este tipo de bases de datos, no es necesario una conversión a tabla, aunque por otro
+lado también es importante observar que estas bases de datos podrían no tener esquema (permiten agregar interrelaciones y
+nuevas entidades de forma dinámica).
+
+\newpage
+
+\section{Modelo Teórico}
+
+Para estudiar el modelo teórico de las bases de datos orientadas a grafos, estudiaremos tres focos distintos: Las entidades, las interrelaciones
+y la integridad de los datos.
+
+\subsection{Entidades}
+Una entidad en una base de datos orientada a grafos se define en dos contextos distintos:
+\begin{itemize}
+ \item Entidad del esquema: Define el \emph{tipo} asociado a una entidad, declarando atributos y el tipo de los mismos y todas las posibles
+ interrelaciones que podría tener. Los atributos pueden representarse dentro de la estructura del nodo o bien como \emph{entidades primitivas}
+ con las que la entidad se relaciona.
+ \begin{center}
+  \includegraphics[width=0.6\textwidth]{img/ej3_entidadEsquema.png}
+  \end{center}
+  Cabe aclarar que no son las únicas formas de definir una entidad en un esquema pero presentamos las más representativas. Recordemos que hay
+  implementaciones que utilizan hipernodos o hiperejes y allí las entidades también se definen utilizando ese tipo de grafos.
+ 
+ \item Entidades de la instancia: Son entidades concretas, que tienen un identificador y un tipo (asociado al esquema). Además tienen atributos
+ concretos y relaciones (con identificador y tipo) con otras entidades instanciadas. 
+ \begin{center}
+  \includegraphics[width=0.6\textwidth]{img/ej3_entidadInstancia.png}
+  \end{center}
+  Nuevamente aclaramos que podría haber otras formas de representación, según el tipo de grafo que se utilice.
+\end{itemize}
+
+Independientemente de la implementación, el uso de grafos para definir entidades permite crear tipos de datos no tradicionales, ya que no se está
+limitado a la estructura tabular de las bases relacionales. En este sentido los grafos más simples permiten definir esquemas similares a jerarquías
+de clases, objetos y colaboradores. Si a esto le sumamos hipernodos, podemos construir entidades que contengan sus propios grafos para representar la
+estructura interna, dando aún más flexibilidad para la creación de estructuras complejas.
+
+\subsection{Relaciones}
+
+\subsection{Integridad de Datos}
+
+
+\subsubsection{Separación entre el esquema y la instancia}
+Las bases de datos orientadas a grafos pueden tomar tres niveles de estructuramiento de los datos:
+\begin{itemize}
+ \item Estructuradas: Se define un esquema y toda instancia debe respetar ese esquema de tal manera que toda entidad tenga todos los atributos que el
+ esquema indica y sólo se puede relacionar con las entidades que el esquema especifica.
+ \item Semi estructuradas: Se define un esquema pero las instancias lo respetan parcialmente. Una entidad en la instancia podría tener sólo algunos
+ de los atributos declarados en el esquema, pero no puede tener atributos que no estén en el esquema. En cuanto a las relaciones, sólo puede usar las
+ que se definieron en el esquema.
+ \item No estructuradas: No se define un esquema. La instancia puede adoptar cualquier forma. La estructura de la base es dinámica. Ej: Neo4j.
+\end{itemize}
+Según qué nivel se implemente, la consistencia entre el esquema y la instancia puede ser más o menos laxa.
+
+
+
+\begin{comment}
 
 \section{Modelo Teórico}
 
@@ -192,6 +351,6 @@ http://neo4j.com/developer/cypher/
 \section{Implementaciones}
 Hypernode Model, neo4j
 http://es.slideshare.net/thobe/an-overview-of-neo4j-internals
-
+\end{comment}
 \end{document}
 
