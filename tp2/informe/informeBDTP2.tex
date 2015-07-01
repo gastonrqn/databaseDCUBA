@@ -347,11 +347,38 @@ Leguajes graficos (pag18), de texto (cypher),
 Cypher- http://neo4j.com/developer/cypher-query-language/
 http://neo4j.com/docs/stable/cypherdoc-finding-paths.html
 http://neo4j.com/developer/cypher/
+\end{comment}
 
 \section{Implementaciones}
-Hypernode Model, neo4j
-http://es.slideshare.net/thobe/an-overview-of-neo4j-internals
-\end{comment}
+El modelos de base de datos orientadas a grafos posee muchas implementaciones diferentes. Cada una de ellas define su propio lenguaje de consulta, su estructura de datos y sus reglas de integridad. A continuación, definiremos dos implementaciones las cuales muestran la esencia del modelo.
+
+\begin{itemize}
+\item Modelo de Hypernodos: Es una implementación la cual fue desarrollada en 1990 y posee una estructura de datos que está basada en hypernodos. Un hypernodo es un grafo dirigido cuyos nodos pueden ser tanto otros grafos, como nodos primitivos (strings, enteros, etc.). De esta forma, se permite que exista el anidamiento de grafos, lo cual posibilita el encapsulamiento de la información. La ventaja de los hypernodos es que pueden ser usados para representar objetos arbitrariamente complejos.
+
+En 1994 se introdujo su esquema y un chequeo de tipos el cual fue representado con el anidamiento de grafos. Si nos fijamos en el ejemplo de la figura \ref{hypernodo}, podemos notar que el esquema define a una $persona$ como un objeto complejo el cual posee las propiedades $nombre$ y $apellido$ del tipo string. Además, define de manera recursiva a la propiedad $padre$. Si miramos su instancia, veremos como se relacionan las diferentes instancias de $persona$ a través de su propiedad $padre$
+
+\begin{center}
+  
+  	\includegraphics[width=0.6\textwidth]{img/ej4_hypernodo.png}\label{hypernodo}
+ 
+\end{center}
+
+El modelo de Hypernodos tiene un lenguaje de consulta basado en reglas llamado $Hyperlog$. Éste es un lenguaje declarativo basado en grafos el cual soporta tanto las queries como los updates del modelo de hypernodos. Hyperlog fue pensado para usuarios no expertos en base de datos, es por eso que que cuenta con un pequeño número de construcciones gráficas las cuales permiten definir, por ejemplo, un esquema a través de una interfaz gráfica. 
+
+En 1995 se agregó el concepto de dependencia funcional entre hypernodos. Dicha dependencia se denota como $A$ $\rightarrow$ $B$, en donde $A$ y $B$ son un conjunto de atributos y $A$ determina el valor de $B$ en todos los hypernodos de la base de datos. Hyperlog denomina a las dependencias funcionales como programas y es lo que le permite realizar queries y updates. 
+
+\item Neo4j: Es una base de datos orientada a grafos que fue implementada en Java. Actualmente cuenta con dos tipos de licencia, una comercial y una $Affero\ General\ Public\ License$ (AGPL). 
+
+La base de Neo4j utiliza $grafos\ de\ propiedad$ \footnote{Es un grafo con peso y etiquetas que permite asignar propiedades tanto en el nodo como en las aristas} para poder extraer datos de forma ágil y sencilla. Además de esto, dicho grafo permite una gran flexibilidad para representar estructuras complejas y permite que el sistema sea escalable dado que la inserción de nodos y aristas nuevas no afectan al sistema anterior.
+
+Si observamos su rendimiento, podemos notar que es mucho mejor que las bases de datos relacionales y las no relacionales. Esto se debe a que al aumentar la dificultad la consulta, las bases de datos orientadas a grafos solo actualizan los nodos y las relaciones de la búsqueda, lo cual, hace que el proceso sea mucho más óptimo ya que no se modifica el grafo completo.
+
+Actualmente neo4j es utilizado por empresas como eBay (el cual la usa para planificar las rutas del servicio de correo electrónico)  y Walmart (que analiza las ventas de los productos para poder recomendarle a sus clientes que comprar). Dichas empresas lo usan dado que las bases de datos orientadas a grafos les permite realizar consultas sobre la relación de los diferentes objetos de manera óptima.
+
+
+\end{itemize}
+
+Por otro lado, existen implementaciones las cuales no utilizan el modelo en su totalidad, sino que utilizan a los grafos para navegar, definir vistas o como representaciones de lenguajes. Un ejemplo de esto es la $Database\ graph\ view$ la cual provee una definición funcional de grafos sobre los datos que pueden estar almacenados en una base de datos ya sea relacional, orientada a objetos o en un file system. Como se puede observar, el modelo propone una visión de grafos en los datos para poder manejarlos y hacer consultas sobre ellos sin importar como está implementada la base de datos.
 
 
 \newpage
