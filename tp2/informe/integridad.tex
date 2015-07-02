@@ -1,4 +1,13 @@
 
+\subsubsection{Consistencia entre el esquema y la instancia}
+
+La mayor\'ia de los modelos de Base de Datos orientada a Grafos utilizan las siguientes 2 restricciones para garantizar consistencia entre el grafo del Esquema y el grafo de la Instancia
+\begin{itemize}
+ \item Toda Entidad y Relaci\'on del grafo de Instancia, tambi\'en debe existir en el grafo del Esquema.
+ \item Toda Entidad dentro del grafo de Instancia s\'olo puede tener relaciones o atributos definidos por su tipo de Entidad.
+\end{itemize}
+
+
 \subsubsection{Separaci\'on entre el esquema y la instancia}
 Las bases de datos orientadas a grafos pueden tomar tres niveles de estructuramiento de los datos:
 \begin{itemize}
@@ -11,6 +20,12 @@ Las bases de datos orientadas a grafos pueden tomar tres niveles de estructurami
 \end{itemize}
 Seg\'un qu\'e nivel se implemente, la consistencia entre el esquema y la instancia puede ser m\'as o menos laxa.
 
+
+\subsubsection{Redundancia de datos}
+
+En muchos casos, en el grafo de Instancias, va a suceder que existen muchas instancias de la misma Entidad. Esto produce que haya informaci\'on redundante en la Base de Datos.
+
+Una posible soluci\'on es agrupar por clases de equilavencias a todas esas instancias duplicadas y considerarlas como una \'unica entidad.
 
 \subsubsection{Identidad de Objetos e Integridad Referencial}
 Para la identidad de los Objetos, en las bases de datos orientadas a grafos se utilizan 2 tipos de identificadores
