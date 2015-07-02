@@ -1,0 +1,41 @@
+
+\subsubsection{Separaci\'on entre el esquema y la instancia}
+Las bases de datos orientadas a grafos pueden tomar tres niveles de estructuramiento de los datos:
+\begin{itemize}
+ \item Estructuradas: Se define un esquema y toda instancia debe respetar ese esquema de tal manera que toda entidad tenga todos los atributos que el
+ esquema indica y s\'olo se puede relacionar con las entidades que el esquema especifica.
+ \item Semi estructuradas: Se define un esquema pero las instancias lo respetan parcialmente. Una entidad en la instancia podr\'ia tener s\'olo algunos
+ de los atributos declarados en el esquema, pero no puede tener atributos que no est\'en en el esquema. En cuanto a las relaciones, s\'olo puede usar las
+ que se definieron en el esquema.
+ \item No estructuradas: No se define un esquema. La instancia puede adoptar cualquier forma. La estructura de la base es din\'amica. Ej: Neo4j.
+\end{itemize}
+Seg\'un qu\'e nivel se implemente, la consistencia entre el esquema y la instancia puede ser m\'as o menos laxa.
+
+
+\subsubsection{Identidad de Objetos e Integridad Referencial}
+Para la identidad de los Objetos, en las bases de datos orientadas a grafos se utilizan 2 tipos de identificadores
+\begin{itemize}
+ \item Identificaci\'on seg\'un el valor de los atributos de cada Entidad.
+ \item Un identificador \'unico asignado a cada Entidad, de manera independiente de sus atributos.
+\end{itemize}
+
+Tener ambas formas de identificaci\'on trae las siguientes ventajas
+\begin{itemize}
+ \item Capacidad de identificar a cualquier entidad, sin importar cu\'an compleja puede ser.
+ \item Los objetos pueden copartir subobjetos en com\'un
+ \item Simplificaci\'on en queries de b\'usqueda y actualizaci\'on
+\end{itemize}
+
+
+En cuanto a la Integridad Referencia, en el Modelo de Hipernodos se definen 2 tipos de restricciones
+\begin{itemize}
+ \item {\bf Integridad de Entidades}. Cada nodo es identificado un\'ivocamente.
+ \item {\bf Integridad Referencial}. S\'olo las entidades existentes pueden ser referenciadas.
+\end{itemize}
+
+
+\subsubsection{Depedencia funcional}
+
+Al igual que en el Modelo de Bases de Datos Relacionales, se intent\'o traer el concepto de Dependencia Funcional. Esto no fu\'e tan facil porque no en todos los modelos de Base de Datos orientadas a Grafos este concepto pod\'ia ser presentado de manera sencilla.
+
+Por el momento el concepto existe para el modelo de Hipernodos. Una Dependencia Funcional $A$ $\rightarrow$ $B$, en donde tanto $A$ como $B$ son conjuntos de atributos, denota que para cada Hipernodo de la Base de Datos, $A$ determina el valor de $B$.

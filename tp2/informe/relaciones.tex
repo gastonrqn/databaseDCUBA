@@ -1,0 +1,41 @@
+A grandes rasgos se pueden identificar 2 tipos de relaciones
+
+\begin{itemize}
+ \item {Relaciones simples}
+ \item {Relaciones complejas}
+\end{itemize}
+
+Las Relaciones Simples conectan 2 Entidades con una sem\'antica simple, y pueden ser representadas f\'acilmente con ejes con label; mientras que las Relaciones Complejas relacionan toda una red de Entidades, teniendo una sem\'antica m\'as compleja, y su representaci\'on tiene mucha dependencia con el modelo.
+
+
+
+A continuaci\'on se listan los tipos de relaciones t\'ipicas que se presentan en el modelo de Base de Datos orientadas a Grafos
+
+\begin{itemize}
+ \item {\bf Atributos}
+
+ 	Representado con un eje con label, para definir una propiedad de una Entidad.
+ \item {\bf Entidades}
+
+ 	Sucede cuando la relacion entre las entidades tiene un sentido conceptual en s\'i mismo. En estos casos la relaci\'on es considerada una Entidad. Con un modelo simple de Base de Datos no alcanza para poder representarlo. Es necesario tener ejes con label que adem\'as tengan tipo, \'o por medio del uso de Hipernodos o Hipergrafos.
+ \item {\bf Relaci\'on de vecindad}
+
+ 	Todos los modelos permiten su modelado. Tiene la desventaja que cuanto m\'as complicado sea el modelo, se pierde la simpleza de esta relaci\'on. En el modelo de Hipernodos o Hipergrafos, se traduce a relaciones anidadas.
+ \item {\bf Abstracci\'on estandar}
+
+ 	Los m\'as comunes son:
+ 	\begin{itemize}
+ 	 \item {Agregaci\'on}
+ 	 \item {Composici\'on}
+ 	 \item {Asociaci\'on}
+ 	 \item {Agrupaci\'on}
+ 	\end{itemize}
+ \item {\bf Derivaci\'on y herencia}
+
+ 	Su modelado cambia seg\'un el enfoque,\\
+ 	Desde el punto de vista del esquema, esto se modela por medio de Subclases y Superclases.\\
+ 	Desde el punto de vista de la instancia, se modela con relaciones de instancia, que definen el tipo de la Entidad.
+ \item {\bf Relaciones anidadas}
+
+ 	Se basan en relaciones definidas por objetos anidados. En los modelos de Hipernodos o Hipergrafos, se desprende naturalmente.
+\end{itemize}

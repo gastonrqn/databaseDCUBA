@@ -311,20 +311,11 @@ estructura interna, dando aún más flexibilidad para la creación de estructura
 
 \subsection{Relaciones}
 
+\input{relaciones.tex}
+
 \subsection{Integridad de Datos}
 
-
-\subsubsection{Separación entre el esquema y la instancia}
-Las bases de datos orientadas a grafos pueden tomar tres niveles de estructuramiento de los datos:
-\begin{itemize}
- \item Estructuradas: Se define un esquema y toda instancia debe respetar ese esquema de tal manera que toda entidad tenga todos los atributos que el
- esquema indica y sólo se puede relacionar con las entidades que el esquema especifica.
- \item Semi estructuradas: Se define un esquema pero las instancias lo respetan parcialmente. Una entidad en la instancia podría tener sólo algunos
- de los atributos declarados en el esquema, pero no puede tener atributos que no estén en el esquema. En cuanto a las relaciones, sólo puede usar las
- que se definieron en el esquema.
- \item No estructuradas: No se define un esquema. La instancia puede adoptar cualquier forma. La estructura de la base es dinámica. Ej: Neo4j.
-\end{itemize}
-Según qué nivel se implemente, la consistencia entre el esquema y la instancia puede ser más o menos laxa.
+\input{integridad.tex}
 
 
 
