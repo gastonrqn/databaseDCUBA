@@ -1,15 +1,36 @@
+\subsubsection{Introducción}
+Cypher es un lenguaje declarativo SQL-inspirado para describir patrones en los grafos. Nos permite describir lo que queremos seleccionar, insertar, actualizar o eliminar de una base de datos de grafo sin necesidad de describir exactamente cómo hacerlo.\newline
+Vamos a mirar algunas operaciones básicas de cypher y ver como se maneja:
+\begin{center}
+  \includegraphics[width=0.8\textwidth]{img/query-1.png}
+  \end{center}
+En esta imagen se ve una consulta que nos devuelve como resultado todos los nodos 1 y nodos 2 tal que existe una relacion entre nodo 1 y nodo 2 en el cual nodo 1 tenga una propiedad y nodo 2 tenga otra propiedad. Por ejemplo si nodo 1 cumple la propiedad de ser persona y nodo 2 de ser campera, entonces devuelvo cada persona con su campera. Es la forma mas básica de consulta.
+\begin{center}
+  \includegraphics[width=0.8\textwidth]{img/query-2.png}
+  \end{center}
+En esta imagen se muestra una consulta en donde la relación (arista) tiene nombre que nos sirve de referencia cuando queramos buscar algún tipo de relacion expecífica. Por ejemplo si los nodos son personas, buscar sus amigos.
+\begin{center}
+  \includegraphics[width=0.8\textwidth]{img/query-3.png}
+  \end{center}
+En esta última imagen se puede ver una consulta que además de la arista tener un nombre, también tiene propiedades como los nodos. Un ejemplo para verlo mejor, supongamos que los nodos son personas nuevamente, la relacion es persona de nodo 1 es amigo de persona de nodo 2, entonces una propiedad de la relación amigo podría fecha de cuando se conocieron.
+
 \subsubsection{Pattern Matching}
-No me queda claro que es esto
+Muestra de cómo el motor de la base de datos resuelve una consulta buscando los patrones que se le especifican.\newline
+Veamos esta imagen:
+\begin{center}
+  \includegraphics[width=0.8\textwidth]{img/query-pattern.png}
+  \end{center}
+Podemos ver lo que es la consulta y como resuelve internamente la base de datos. En [:PADRE*3] indicamos que nos devuelva un camino de 3 ejes con el label PADRE. La base de datos busca ese patrón con el grafo recorriendo los ejes hasta encontrar la solución para nuestra consulta como se indica en la parte inferior de la imagen.
+Esta consulta es bien distintiva de grafos, imposible de realizar en SQL.
 
 \subsubsection{Operaciones}
+Además de las operaciones tradicionales, se cuentan con operaciones de grafos que son muy interesantes:
 \begin{itemize}
-\item Match: selecciono el/los nodo/s que quiero
-\item Create: sirve para crear un nodo como una relacion (arista)
-\item Return: devuelve el resultado
-\item ForEach: podemos recorrer nodos
-\item ShortestPath: encuentra el camino mas corto
-\item Index: crear indice sobre un nodo
-\item Case:
-\item Neighborhood: funcion de grafo que nos da todos los vecinos
-\item Path: podemos delimitar la longitud del camino que recorra
+\item ForEach: Podemos recorrer nodos.
+\item ShortestPath: Encuentra el camino más corto.
+\item Neighborhood: Funcion de grafo que nos da todos los vecinos.
+\item Path: Podemos delimitar la longitud del camino que recorra.
+\item AllSimplePaths.
+\item AllPaths.
+\item Dijkstra: Pudiendo ser aplicando usando costo variable en las aristas o costo fijo para todas.
 \end{itemize}
